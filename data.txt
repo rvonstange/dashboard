@@ -1,1 +1,5 @@
-[]
+{
+"Shubhit": {"balance": "8000", "entries": [{"amount": "10", "date": "date", "type": "Food", "location": "Resnik"}, {"amount": "20", "date": "date", "type": "Shopping", "location": "Target"}, {"amount": "10", "date": "date", "type": "Groceries", "location": "Entropy"}]},
+"Sid": {},
+"Rob": {},
+}
