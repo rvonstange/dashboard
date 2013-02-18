@@ -1,4 +1,4 @@
-// 15-237 Homework 3 - Eebae Server
+// 15-237 Unit Project Homework 4 - Get Monay Server
 
 var express = require("express"); // imports express
 var app = express();        // create a new instance of express
@@ -11,7 +11,7 @@ var fs = require("fs");
 app.use(express.bodyParser());
 
 // The global datastore for this example
-var listings;
+var database;
 
 // Asynchronously read file contents, then call callbackFn
 function readFile(filename, defaultData, callbackFn) {
@@ -39,25 +39,25 @@ function writeFile(filename, data, callbackFn) {
 }
 
 // get all items
-app.get("/listings", function(request, response){
+app.get("/database", function(request, response){
   response.send({
-    listings: listings,
+    database: database,
     success: true
   });
 });
 
 // get one item
-app.get("/listings/:id", function(request, response){
+app.get("/database/:id", function(request, response){
   var id = request.params.id;
-  var item = listings[id];
+  var item = database[id];
   response.send({
-    listings: item,
+    database: item,
     success: (item !== undefined)
   });
 });
 
 // create new item
-app.post("/listings", function(request, response) {
+app.post("/database", function(request, response) {
   console.log(request.body);
   var item = {"desc": request.body.desc,
               "author": request.body.author,
@@ -71,8 +71,8 @@ app.post("/listings", function(request, response) {
       (item.price !== undefined);
 
   if (successful) {
-    listings.push(item);
-    writeFile("data.txt", JSON.stringify(listings));
+    database.push(item);
+    writeFile("data.txt", JSON.stringify(database));
   } else {
     item = undefined;
   }
@@ -84,10 +84,10 @@ app.post("/listings", function(request, response) {
 });
 
 // update one item
-app.put("/listings/:id", function(request, response){
+app.put("/database/:id", function(request, response){
   // change listing at index, to the new listing
   var id = request.params.id;
-  var oldItem = listings[id];
+  var oldItem = database[id];
   var item = { "desc": request.body.desc,
                "author": request.body.author,
                "date": new Date(),
@@ -99,7 +99,7 @@ app.put("/listings/:id", function(request, response){
   item.sold = (item.sold !== undefined) ? JSON.parse(item.sold) : oldItem.sold;
 
   // commit the update
-  listings[id] = item;
+  database[id] = item;
 
   response.send({
     item: item,
@@ -108,24 +108,24 @@ app.put("/listings/:id", function(request, response){
 });
 
 // delete entire list
-app.delete("/listings", function(request, response){
-  listings = [];
-  writeFile("data.txt", JSON.stringify(listings));
+app.delete("/database", function(request, response){
+  database = [];
+  writeFile("data.txt", JSON.stringify(database));
   response.send({
-    listings: listings,
+    database: database,
     success: true
   });
 });
 
 // delete one item
-app.delete("/listings/:id", function(request, response){
+app.delete("/database/:id", function(request, response){
   var id = request.params.id;
-  var old = listings[id];
-  listings.splice(id, 1);
+  var old = database[id];
+  database.splice(id, 1);
   console.log(id);
-  writeFile("data.txt", JSON.stringify(listings));
+  writeFile("data.txt", JSON.stringify(database));
   response.send({
-    listings: old,
+    database: old,
     success: (old !== undefined)
   });
 });
@@ -139,7 +139,7 @@ function initServer() {
   // When we start the server, we must load the stored data
   var defaultList = "[]";
   readFile("data.txt", defaultList, function(err, data) {
-    listings = JSON.parse(data);
+    database = JSON.parse(data);
   });
 }
 
