@@ -47,12 +47,12 @@ app.get("/database", function(request, response){
 });
 
 // get one item
-app.get("/database/:id", function(request, response){
-  var id = request.params.id;
-  var item = database[id];
+app.get("/database/:user", function(request, response){
+  var user = request.params.user;
+  var profile = database[user];
   response.send({
-    database: item,
-    success: (item !== undefined)
+    profile: profile,
+    success: (profile !== undefined)
   });
 });
 
