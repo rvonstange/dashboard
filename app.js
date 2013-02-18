@@ -59,16 +59,14 @@ app.get("/database/:id", function(request, response){
 // create new item
 app.post("/database", function(request, response) {
   console.log(request.body);
-  var item = {"desc": request.body.desc,
-              "author": request.body.author,
-              "date": new Date(),
-              "price": Number(request.body.price),
-              "sold": false };
+  var user = request.body.user;
+  var newClass = {"category": request.body.category,
+                  "name": request.body.name,
+                  "events": {}};
 
   var successful = 
-      (item.desc !== undefined) &&
-      (item.author !== undefined) &&
-      (item.price !== undefined);
+      (newClass.category !== undefined) &&
+      (newClass.name !== undefined);
 
   if (successful) {
     database.push(item);
