@@ -69,10 +69,10 @@ app.post("/database", function(request, response) {
       (newClass.name !== undefined);
 
   if (successful) {
-    database.push(item);
+    database.user.classes.push(newClass);
     writeFile("data.txt", JSON.stringify(database));
   } else {
-    item = undefined;
+    newClass = undefined;
   }
 
   response.send({ 
