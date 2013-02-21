@@ -1,17 +1,28 @@
 dashboard
 =========
 
-Unit Project 
-
-COCK
-
-PENIS
-
-fuck you slut
-
-well you sound like a vagina. 
-
-this is a change i am making. to the FUCKING code.
+Real README content here:
+-----------------------
 
 
-Sid is now in the house
+
+
+
+-----------------------
+
+
+
+Useful Sites:
+-----------------------
+http://webdesignerwall.com/
+	lots of good info/tutorial on web design features.
+
+http://www.w3.org/TR/calendar-api/
+	Not really sure what this is, but perhaps a useful calendar API.
+
+
+-----------------------
+
+
+Citations:
+-----------------------
