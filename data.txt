@@ -1,5 +1,1 @@
-{
-"Shubhit": {"classes": []},
-"Sid": {},
-"Rob": {},
-}
+{"shubhit":{"classes":[{"category":"classes","name":"15-237","events":[{"name":"homework 4","type":"assignment","due":"Thu Feb 21 2013 20:38:40 GMT-0500 (EST)","priority":"high"}]}]},"sid":{},"rob":{}}

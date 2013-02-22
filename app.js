@@ -40,6 +40,7 @@ function writeFile(filename, data, callbackFn) {
 
 // get all items
 app.get("/database", function(request, response){
+  console.log(database["shubhit"]);
   response.send({
     database: database,
     success: true
@@ -50,6 +51,7 @@ app.get("/database", function(request, response){
 app.get("/database/:user", function(request, response){
   var user = request.params.user;
   var profile = database[user];
+
   response.send({
     profile: profile,
     success: (profile !== undefined)
@@ -58,18 +60,19 @@ app.get("/database/:user", function(request, response){
 
 // create new item
 app.post("/database", function(request, response) {
-  console.log(request.body);
+  //console.log(request.body);
   var user = request.body.user;
+  console.log("user = ", user, ", database[user] = ", database[user]);
   var newClass = {"category": request.body.category,
                   "name": request.body.name,
-                  "events": {}};
+                  "events": []};
 
   var successful = 
       (newClass.category !== undefined) &&
       (newClass.name !== undefined);
 
   if (successful) {
-    database.user.classes.push(newClass);
+    database[user].classes.push(newClass);
     writeFile("data.txt", JSON.stringify(database));
   } else {
     newClass = undefined;
@@ -85,20 +88,23 @@ app.post("/database/event", function(request, response) {
   console.log(request.body);
   var event = request.body.event;
   var user = request.body.user;
-  var class = request.body.class;
-  var newClass = {"category": request.body.category,
-                  "name": request.body.name,
-                  "events": {}};
+  var thisClass = request.body.class;
+  // var newClass = {"category": request.body.category,
+  //                 "name": request.body.name,
+  //                 "events": {}};
 
   var successful = 
       (event !== undefined) &&
       (user !== undefined) &&
-      (class !== undefined);
+      (thisClass !== undefined);
 
-  var classIndex = database.user.classes.indexOf(class);
-
+  var classIndex = -1;
+  for (i = 0; i < database[user].classes.length; i++) {
+    if (database[user].classes[i].name === thisClass) classIndex = i;
+  }
+  console.log(classIndex);
   if (successful) {
-    database.user.classes[classIndex].events.push(newClass);
+    database[user].classes[classIndex].events.push(event);
     writeFile("data.txt", JSON.stringify(database));
   } else {
     event = undefined;

@@ -29,25 +29,24 @@ function addEvent() {
   var times = $(".times");
   var workTime = [];
   for (i = 0; i < times.length; i++) {
-    workTime.push({'start': times[i].start
+    workTime.push({'start': times[i].start,
                   'end': times[i].end})
   }
   var newEvent = {"name": eventName.val(),
                   "type": type.val(),
                   "due": due,
                   "priority": priority,
-                  "workTime": workTime};
+                  "workTime": workTime };
   addEventToServer(user.val(), className.val(), newEvent);
 
   var classIndex = database.user.val().classes.indexOf(className.val());
   database.user.val().classes[classIndex].events.push(newEvent);
-
 }
 
-function addEventToServer(user, class, event) {
+function addEventToServer(user, thisClass, event) {
   $.ajax({
     type: "post",
-    data: {'user': user, 'class': class, 'event': event},
+    data: {"user": user, "class": thisClass, "event": event},
     url: "/database/event",
     success: function(data) {
       //blah
@@ -72,7 +71,7 @@ function getAll() {
       url: "/database",
       success: function(data) {
         database = data.database;
-        //console.log(listings);
+        console.log(database);
         refreshDOM();
       }
     });
@@ -119,5 +118,5 @@ function refreshDOM() {}
 
 
 $(document).ready(function() {
-    get();
+    getAll();
   });
