@@ -1,4 +1,4 @@
-// 15-237 Unit Project Homework 4 - Get Monay Server
+// 15-237 Unit Project Homework 4 - Homework Server
 
 var express = require("express"); // imports express
 var app = express();        // create a new instance of express
@@ -76,7 +76,36 @@ app.post("/database", function(request, response) {
   }
 
   response.send({ 
-    item: item,
+    class: newClass,
+    success: successful
+  });
+});
+
+app.post("/database/event", function(request, response) {
+  console.log(request.body);
+  var event = request.body.event;
+  var user = request.body.user;
+  var class = request.body.class;
+  var newClass = {"category": request.body.category,
+                  "name": request.body.name,
+                  "events": {}};
+
+  var successful = 
+      (event !== undefined) &&
+      (user !== undefined) &&
+      (class !== undefined);
+
+  var classIndex = database.user.classes.indexOf(class);
+
+  if (successful) {
+    database.user.classes[classIndex].events.push(newClass);
+    writeFile("data.txt", JSON.stringify(database));
+  } else {
+    event = undefined;
+  }
+
+  response.send({ 
+    event: event,
     success: successful
   });
 });
