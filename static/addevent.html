@@ -7,60 +7,62 @@
 
 </head>
 
-<body> 
-	<div id="bar">
-		<ul>
-			<h1 class="title">CAFtCoJ</h1>
-			<li><a href="calendar.html">Calendar</a></li>
-			<li><a href="listings.html">Cock</a></li>
-			<li><a href="addclass.html">Add Class</a></li>
-			<li><a href="addevent.html">Add Event</a></li>
-		</ul>
+<body>
+	<div class="page"> 
+		<div id="bar">
+			<ul>
+				<h1 class="title">CAFtCoJ</h1>
+				<li><a href="calendar.html">Calendar</a></li>
+				<li><a href="listings.html">Cock</a></li>
+				<li><a href="addClass.html">Add Class</a></li>
+				<li><a href="addEvent.html">Add Event</a></li>
+			</ul>
+		</div>
+		<div class="inputs">
+			<h2 class="title" id="addEvent_title">Add Event</h2>
+			<br>
+			<form id="addEventForm">
+				<table id="eventTable">
+				<tr id ="dropDown_classes">
+					<td><label for="dropDown_classes">Choose Class: </label></td>
+					<td>
+						<select name= "classes/groups">
+							<option value="">None </option>
+							<option value="Sex EDU">Sex </option>
+							<option value="African History">African History </option>
+						</select>
+					</td>
+				</tr>
+				<tr id ="eventName">
+					<td><label for="eventName">Event Name: </label></td>
+					<td><input type ="text" name = "eventName"></td>
+				</tr>
+				<tr id ="type">
+					<td><label for="type">Type: </label></td>
+					<td>				
+						<select name= "type">
+							<option value="Office Hours">Office Hours</option>
+							<option value="Homework">Homework</option>
+							<option value="Quiz">Quiz </option>
+							<option value="Midterm">Exam </option>
+							<option value="Masturbate">Masturbate </option>
+						</select>
+					</td>
+				</tr>
+				<tr id ="priority">
+					<td><label for="priority">Priority: </label></td>
+					<td class="priorityButtons"><input type="radio" name="priority" value="high" /> High</td>
+					<td class="priorityButtons"><input type="radio" name="priority" value="medium" /> Medium</td>
+					<td class="priorityButtons"><input type="radio" name="priority" value="low" /> Low</td>
+				</tr>
+				<tr id="dueDate">
+					<td><label for="dueDate">Due Date: </label></td>
+					<td><input type="text" name="dueDate" /></td>
+				</tr>
+				</table>
+			</form>
+		</div>
 	</div>
-	<h2 class="title" id="addEvent_title">Add Event</h2>
-	<br>
-	<form id="addEvent_form">
-		<table>
-		<tr id ="dropDown_classes">
-			<td><label for="dropDown_classes">Choose Class: </label></td>
-			<td>
-				<select name= "classes/groups">
-					<option value="">None </option>
-					<option value="Sex EDU">Sex </option>
-					<option value="African History">African History </option>
-				</select>
-			</td>
-		</tr>
-		<tr id ="eventName">
-			<td><label for="eventName">Event Name: </label></td>
-			<td><input type ="text" name = "eventName"></td>
-		</tr>
-		<tr id ="type">
-			<td><label for="type">Type: </label></td>
-			<td>				
-				<select name= "type">
-					<option value="Office Hours">Office Hours</option>
-					<option value="Homework">Homework</option>
-					<option value="Quiz">Quiz </option>
-					<option value="Midterm">Exam </option>
-					<option value="Masturbate">Masturbate </option>
-				</select>
-			</td>
-		</tr>
-		<tr id ="usernameField">
-			<td><label for="username">Priority: </label></td>
-			<td><input type="radio" name="priority" value="high" /> High</td>
-			<td><input type="radio" name="priority" value="medium" /> Medium</td>
-			<td><input type="radio" name="priority" value="low" /> Low</td>
-		</tr>
-		<tr id="dueDate">
-			<td><label for="dueDate">Due Date: </label></td>
-			<td><input type="text" name="dueDate" /></td>
-		</tr>
-		</table>
-
-	</form>
-
 
 
 
