@@ -2,14 +2,49 @@
 //global datastore
 var database;
 
-function login() {
-  var user = $("#user-input");
-  var password = $("#password-input");
-  console.log(user.val(), password.val(), user.val() in database);
-  if (user.val() in database) {
-    console.log("im here shit");
-    window.location.href = "calendar.html";
+var index = {
+  init: function() {
+    index.invalidUser = false;
+    index.invalidPass = false;
+  },
+
+
+  login: function() {
+    var user = $("#user-input");
+    var password = $("#password-input");
+    console.log(user.val(), password.val(), user.val() in database);
+    if ((user.val() in database) && (database[user.val()].password === password.val())) {
+      console.log("im here shit");
+      window.location.href = "calendar.html";
+      calendar.init(user.val());
+    }
+    else {
+      if (!(user.val() in database)) index.invalidUser = true;
+      else index.invalidPass = true;
+      index.refreshLogin();
+    }
+
+  },
+
+  refreshLogin: function() {
+    var container = $("#loginFail");
+    container.html("");
+    if (index.invalidUser) {
+      container.html("Invalid Username or Password");
+    }
+    if (index.invalidPass) {
+      container.html("Invalid Password");
+    }
+
   }
+
+}
+
+var calendar = {
+  init: function(user) {
+
+  }
+
 
 }
 
@@ -84,7 +119,7 @@ function getAll() {
       success: function(data) {
         database = data.database;
         console.log(database);
-        refreshDOM();
+        //refreshDOM();
       }
     });
   }
@@ -126,7 +161,7 @@ function delEvent(user, className, eventName) {
   })
 }
 
-function refreshDOM() {}
+
 
 function editEvent() {
   var user = $("#user-input");
@@ -209,4 +244,5 @@ function getEventIndex(user, classIndex, eventName) {
 
 $(document).ready(function() {
     getAll();
+    index.init();
   });
