@@ -79,6 +79,17 @@ app.get("/database/:user", function(request, response){
   });
 });
 
+app.post("/database/newUser", function(request, response) {
+  var user = request.body.user;
+  var data = request.body.data;
+  database[user] = data;
+  writeFile("data.txt", JSON.stringify(database));
+  response.send({
+    database: database,
+    success: true
+  });
+});
+
 // create new item
 app.post("/database", function(request, response) {
   //console.log(request.body);

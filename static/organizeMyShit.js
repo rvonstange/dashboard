@@ -15,8 +15,8 @@ var index = {
     console.log(user.val(), password.val(), user.val() in database, database[user.val()]);
     if ((user.val() in database) && (database[user.val()].password === password.val())) {
       console.log("im here shit");
-      window.location = $(this).attr('href', "calendar.html") + '?sessionid=user.val()';
-      //window.location.href = ;
+      //window.location = $(this).attr('href', "calendar.html") + '?sessionid=user.val()';
+      window.location.href = 'calendar.html#' + encodeURI(user.val());
       calendar.init(user.val());
     }
     else {
@@ -41,13 +41,67 @@ var index = {
 
 }
 
+var signup = {
+  signup: function() {
+    signup.userTaken = false;
+    signup.passDiff = false;
+    var user = $("#username");
+    var firstName = $("#first");
+    var lastName = $("#last");
+    var college = $("#college");
+    var password1 = $("#password1");
+    var password2 = $("#password2");
+    if (password2.val() !== password1.val()) signup.passDiff = true;
+    if (user.val() in database) signup.userTaken = true;
+    if (signup.passDiff === false && signup.userTaken === false) {
+      console.log("i should add user");
+      var newUser = {first: firstName.val(),
+                    last: lastName.val(),
+                    college: college.val(),
+                    password: password1.val()};
+      database[user.val()] = newUser;
+      signup.addUser(user.val(), newUser);
+      window.location.href = 'calendar.html#' + encodeURI(user.val());
+    }
+    signup.refreshSignup();
+  },
+
+  addUser: function(user, data) {
+    $.ajax({
+    type: "post",
+    data: {"user": user, "data": data},
+    url: "/database/newUser",
+    success: function(data) { 
+      //refreshDOM();
+    }
+  });
+  },
+
+  refreshSignup: function() {
+    var container1 = $("#message1");
+    var container2 = $("#message2");
+    container1.html("");
+    container2.html("");
+    if (signup.userTaken) {
+      container1.html("Username taken. Sorry!");
+    }
+    if (signup.passDiff) {
+      // var thisHTML = container.html();
+      // console.log("thishtml = ", container.html());
+      container2.html("Passwords do not match!");
+    }
+  }
+}
+
+
+
 var calendar = {
   init: function(user) {
     console.log(user);
     calendar.user = user;
   }
 
-  
+
 
 }
 
@@ -241,15 +295,35 @@ function getEventIndex(user, classIndex, eventName) {
 
 
 
+// function addCurrent(user) {
+//   $.ajax({
+//     type: "post",
+//     data: {"user": user},
+//     url: "/database/current",
+//     success: function(data) { 
+//       //refreshDOM();
+//     }
+//   });
+// }
 
+// function updateCurrent() {
+//   var user = window.location.href.slice(window.location.href.indexOf("#")+1);
+//   console.log(user);
+//   database["current"] = user;
 
-
+// }
 
 $(document).ready(function() {
     getAll();
     index.init();
     var pathname = window.location.pathname;
-    console.log(pathname);
+    console.log("path = ", pathname);
+    //var data = stringManipulationOn(window.location.href);
+    var userIndex = window.location.href.indexOf("#");
+    //console.log(userIndex);
+    user = undefined;
+    if (userIndex !== -1) user = window.location.href.slice(userIndex+1);
+    console.log("user = ", user);
   });
 
 

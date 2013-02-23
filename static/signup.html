@@ -12,31 +12,31 @@
 	<br>
 	<h2 class="title" id="signup_title">Sign Up</h2>
 	<br>
-	<form id="signup_form">
+	<form id="signup_form" action="javascript:signup.signup()">
 		<table>
 		<tr id ="firstName">
 			<td><label for="username" placeholder="First Name">First Name: </label></td>
-			<td><input type ="text" name = "firstname"></td>
+			<td><input id = "first" type ="text" name = "firstname"></td>
 		</tr>
 		<tr id ="lastName">
 			<td><label for="lastname" placeholder="Last Name">Last Name: </label></td>
-			<td><input type ="text" name = "lastname"></td>
+			<td><input id = "last" type ="text" name = "lastname"></td>
 		</tr>
 		<tr id ="school">
 			<td><label for="school" placeholder="College">College: </label></td>
-			<td><input type ="text" name = "school"></td>
+			<td><input id = "college" type ="text" name = "school"></td>
 		</tr>
 		<tr id ="usernameField">
 			<td><label for="username">Username: </label></td>
-			<td><input type ="text" name = "username"></td>
+			<td><input id = "username" type ="text" name = "username"></td>
 		</tr>
 		<tr id="passwordField">
 			<td><label for="password">Password: </label></td>
-			<td><input type="password" name="password" /></td>
+			<td><input id = "password1" type="password" name="password" /></td>
 		</tr>
 		<tr id="passwordField">
 			<td><label for="password">Re-Type Password: </label></td>
-			<td><input type="password" name="password" /></td>
+			<td><input id = "password2" type="password" name="password" /></td>
 		</tr>
 		</table>
 		<div>
@@ -44,7 +44,8 @@
 		</div>
 	</form>
 
-
+	<div id="message1"></div>
+	<div id="message2"></div>
 
 
 
