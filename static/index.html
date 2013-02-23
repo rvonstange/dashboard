@@ -1,35 +1,39 @@
+<!DOCTYPE html>
 <html> 
-<head>
-    <link href="reset.css" rel="stylesheet" type="text/css">
-    <link href="style.css" rel="stylesheet" type="text/css">
+	<head>
+	  <link href="reset.css" rel="stylesheet" type="text/css">
+	  <link href="style.css" rel="stylesheet" type="text/css">
 
-</head>
+	</head>
 
-<body> 
-	<h1>CAFtCoJ</h1>
-	<form id ="usernameField">
-		<label for="username">Username: </label>
-		<input type ="text" name = "username">
-	</form>
-	<form id="passwordField">
-		<label for="password">Password: </label>
-		<input type="password" name="password" />
-	</form>
-	<div id="buttons">
-		<form action="calendar.html">
-			<input type="submit" value="Login" />
-		</form>		
-		<form action="signup.html">
-			<input type="submit" value="Sign Up" />	
+	<body> 
+		<h1>CAFtCoJ</h1>
+		<form name="loginForm" action="javascript:login()">
+			<div id ="usernameField">
+				<label for="username">Username: </label>
+				<input id = "user-input" type ="text" name = "username">
+			</div>
+			<div id="passwordField">
+				<label for="password">Password: </label>
+				<input id = "password-input" type="password" name="password" />
+			</div>
+			<div>
+				<input id="submitButton" name="Submit"  type="submit" value="Login"/>
+			</div>
 		</form>
-	</div>
+		
+		<div id="buttons">
+			<form action="signup.html">
+				<input type="submit" value="Sign Up" />	
+			</form>
+		</div>
 
 
 
 
 
 
-	<script src="jquery-1.9.0.js"></script>
-	<script src="organizeMyShit.js"></script>
-</body>
+		<script src="jquery-1.9.0.js"></script>
+		<script src="organizeMyShit.js"></script>
+	</body>
 </html>

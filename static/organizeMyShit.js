@@ -2,6 +2,18 @@
 //global datastore
 var database;
 
+function login() {
+  var user = $("#user-input");
+  var password = $("#password-input");
+  console.log(user.val(), password.val(), user.val() in database);
+  if (user.val() in database) {
+    console.log("im here shit");
+    window.location.href = "calendar.html";
+  }
+
+}
+
+
 function addClass() {
 	var user = $("#user-input");
 	var category = $("#category-input");
