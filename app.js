@@ -13,6 +13,26 @@ app.use(express.bodyParser());
 // The global datastore for this example
 var database;
 
+function getClassIndex(user, className) {
+  var classIndex = undefined;
+  for (i = 0; i < database[user].classes.length; i++) {
+    if (database[user].classes[i].name === className) {
+      classIndex = i;
+    }
+  }
+  return classIndex;
+}
+
+function getEventIndex(user, classIndex, eventName) {
+  var eventIndex = undefined;
+  for (j = 0; j < database[user].classes[classIndex].events.length; j++) {
+    if (database[user].classes[classIndex].events[j].name === eventName) {
+      eventIndex = j;
+    }
+  }
+  return eventIndex;
+}
+
 // Asynchronously read file contents, then call callbackFn
 function readFile(filename, defaultData, callbackFn) {
   fs.readFile(filename, function(err, data) {
@@ -51,6 +71,7 @@ app.get("/database", function(request, response){
 app.get("/database/:user", function(request, response){
   var user = request.params.user;
   var profile = database[user];
+  console.log(profile, "type: ", typeof profile);
 
   response.send({
     profile: profile,
@@ -117,49 +138,72 @@ app.post("/database/event", function(request, response) {
 });
 
 // update one item
-app.put("/database/:id", function(request, response){
+app.put("/database/event", function(request, response){
   // change listing at index, to the new listing
-  var id = request.params.id;
-  var oldItem = database[id];
-  var item = { "desc": request.body.desc,
-               "author": request.body.author,
-               "date": new Date(),
-               "price": request.body.price,
-               "sold": request.body.sold };
-  item.desc = (item.desc !== undefined) ? item.desc : oldItem.desc;
-  item.author = (item.author !== undefined) ? item.author : oldItem.author;
-  item.price = (item.price !== undefined) ? item.price : oldItem.price;
-  item.sold = (item.sold !== undefined) ? JSON.parse(item.sold) : oldItem.sold;
-
-  // commit the update
-  database[id] = item;
+  var user = request.body.user;
+  var className = request.body.className;
+  var event = request.body.event;
+  var eventIndex = request.body.index;
+  
+  var classIndex = getClassIndex(user, className);
+  database.user.val().classes[classIndex].events[eventIndex] = newEvent;
+  var successful = (classIndex !== undefined) && (eventIndex !== undefined);
 
   response.send({
-    item: item,
-    success: true
+    success: successful
   });
 });
 
-// delete entire list
-app.delete("/database", function(request, response){
-  database = [];
-  writeFile("data.txt", JSON.stringify(database));
+// delete class
+app.delete("/database/:user", function(request, response){
+  var user = request.params.user;
+  var className = request.body.className;
+  console.log("request.body: ", request.body);
+  classIndex = undefined;
+  for (i = 0; i < database[user].classes.length; i++) {
+    if (database[user].classes[i].name === className) {
+      classIndex = i;
+    }
+  }
+
+  var successful = classIndex !== undefined;
+  console.log("successful? ", successful);
+  if (successful) {
+    database[user].classes.splice(classIndex, 1);
+    writeFile("data.txt", JSON.stringify(database));
+  }
+  
   response.send({
     database: database,
-    success: true
+    success: successful
   });
 });
 
-// delete one item
-app.delete("/database/:id", function(request, response){
-  var id = request.params.id;
-  var old = database[id];
-  database.splice(id, 1);
-  console.log(id);
-  writeFile("data.txt", JSON.stringify(database));
+// delete event
+app.delete("/database/:user/:className", function(request, response){
+  var user = request.params.user;
+  var className = request.params.className;
+  eventName = request.body.eventName;
+  classIndex = undefined;
+  eventIndex = undefined;
+  for (i = 0; i < database[user].classes.length; i++) {
+    if (database[user].classes[i].name === className) {
+      classIndex = i;
+      for (j = 0; j < database[user].classes[i].events.length; j++) {
+        if (database[user].classes[i].events[j].name === eventName) {
+          eventIndex = j;
+        }
+      }
+    }
+  }
+  var successful = (classIndex !== undefined) && (eventIndex !== undefined);
+  if (successful) {
+    database[user].classes[classIndex].events.splice(eventIndex, 1);
+    writeFile("data.txt", JSON.stringify(database));
+  }
   response.send({
-    database: old,
-    success: (old !== undefined)
+    database: database,
+    success: successful
   });
 });
 

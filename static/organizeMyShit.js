@@ -55,15 +55,15 @@ function addEventToServer(user, thisClass, event) {
 }
 
 function addClassToServer(user, category, name) {
-    $.ajax({
-      type: "post",
-      data: {"user": user, "category": category, "name": name},
-      url: "/database",
-      success: function(data) { 
-        //refreshDOM();
-      }
-    });
-  }
+  $.ajax({
+    type: "post",
+    data: {"user": user, "category": category, "name": name},
+    url: "/database",
+    success: function(data) { 
+      //refreshDOM();
+    }
+  });
+}
 
 function getAll() {
     $.ajax({
@@ -83,27 +83,105 @@ function getProfile(user) {
       url: "/database/" + user,
       success: function(data) {
         database[user] = data.profile;
-        //console.log(listings);
+        console.log(data.profile);
         refreshDOM();
       }
     });
   }
 
+function delClass(user, className) {
+  $.ajax({
+    type: "delete",
+    url: "/database/" + user,
+    data: {"className": className},
+    success: function(data) {
+      database[user] = data.profile;
+      console.log(data.profile);
+      //refreshDOM();
+    }
+  })
+}
 
+function delEvent(user, className, eventName) {
+  $.ajax({
+    type: "delete",
+    url: "/database/" + user + "/" + className,
+    data: {"eventName": eventName},
+    success: function(data) {
+      database[user] = data.profile;
+      console.log(data.profile);
+    }
+  })
+}
 
 function refreshDOM() {}
 
+function editEvent() {
+  var user = $("#user-input");
+  var className = $("#className-input");
+  var oldEventname;
+  var eventName = $("#eventName-input");
+  var type = $("#eventType-input");
+  var priority = $("#priority-input");
+  var due = new Date();
+  var times = $(".times");
+  var workTime = [];
+  for (i = 0; i < times.length; i++) {
+    workTime.push({'start': times[i].start,
+                  'end': times[i].end})
+  }
+  var classIndex = getClassIndex(user, className.val());
+  var eventIndex = getEventIndex(user, classIndex, oldEventname.val());
 
+  var newEvent = {"name": eventName.val(),
+                  "type": type.val(),
+                  "due": due,
+                  "priority": priority,
+                  "workTime": workTime };
+  editEventOnServer(user.val(), className.val(), newEvent, eventIndex);
 
+  
+  database.user.val().classes[classIndex].events[eventIndex] = newEvent;
+}
 
+function editEventOnServer(user, className, event, index) {
+  $.ajax({
+    type: "put",
+    data: {"user": user, "className": className, "event": event, "index": index},
+    url: "/database/event",
+    success: function(data) {
+      //blah
+    }
+  });
+}
 
+function editClass () {
+  
+}
 
+function editClassOnServer() {
+  // body...
+}
 
+function getClassIndex(user, className) {
+  var classIndex = undefined;
+  for (i = 0; i < database[user].classes.length; i++) {
+    if (database[user].classes[i].name === className) {
+      classIndex = i;
+    }
+  }
+  return classIndex;
+}
 
-
-
-
-
+function getEventIndex(user, classIndex, eventName) {
+  var eventIndex = undefined;
+  for (j = 0; j < database[user].classes[classIndex].events.length; j++) {
+    if (database[user].classes[classIndex].events[j].name === eventName) {
+      eventIndex = j;
+    }
+  }
+  return eventIndex;
+}
 
 
 

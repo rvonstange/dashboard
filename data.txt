@@ -1,1 +1,1 @@
-{"shubhit":{"classes":[{"category":"classes","name":"15-237","events":[{"name":"homework 4","type":"assignment","due":"Thu Feb 21 2013 20:38:40 GMT-0500 (EST)","priority":"high"}]}]},"sid":{},"rob":{}}
+{"shubhit":{"classes":[{"category":"organizations","name":"Bhangra","events":[{"name":"Bhangra at the Bell","type":"Competition","due":"Tue Apr 02 2013 00:00:00 GMT-0400 (EDT)","priority":"high","workTime":"everyday"}]}]},"sid":{},"rob":{}}
