@@ -12,10 +12,11 @@ var index = {
   login: function() {
     var user = $("#user-input");
     var password = $("#password-input");
-    console.log(user.val(), password.val(), user.val() in database);
+    console.log(user.val(), password.val(), user.val() in database, database[user.val()]);
     if ((user.val() in database) && (database[user.val()].password === password.val())) {
       console.log("im here shit");
-      window.location.href = "calendar.html";
+      window.location = $(this).attr('href', "calendar.html") + '?sessionid=user.val()';
+      //window.location.href = ;
       calendar.init(user.val());
     }
     else {
@@ -42,9 +43,11 @@ var index = {
 
 var calendar = {
   init: function(user) {
-
+    console.log(user);
+    calendar.user = user;
   }
 
+  
 
 }
 
@@ -245,4 +248,8 @@ function getEventIndex(user, classIndex, eventName) {
 $(document).ready(function() {
     getAll();
     index.init();
+    var pathname = window.location.pathname;
+    console.log(pathname);
   });
+
+

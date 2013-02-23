@@ -1,1 +1,1 @@
-{"shubhit":{"classes":[{"category":"organizations","name":"Bhangra","events":[{"name":"Bhangra at the Bell","type":"Competition","due":"Tue Apr 02 2013 00:00:00 GMT-0400 (EDT)","priority":"high","workTime":"everyday"}]}]},"sid":{},"rob":{}}
+{"shubhit":{"password": "hello", "classes":[{"category":"organizations","name":"Bhangra","events":[{"name":"Bhangra at the Bell","type":"Competition","due":"Tue Apr 02 2013 00:00:00 GMT-0400 (EDT)","priority":"high","workTime":"everyday"}]}]},"sid":{},"rob":{}}
