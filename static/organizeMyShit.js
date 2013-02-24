@@ -61,7 +61,7 @@ var signup = {
                     password: password1.val()};
       database[user.val()] = newUser;
       signup.addUser(user.val(), newUser);
-      window.location.href = 'calendar.html#' + encodeURI(user.val());
+      //window.location.href = 'calendar.html#' + encodeURI(user.val());
     }
     signup.refreshSignup();
   },
@@ -72,7 +72,7 @@ var signup = {
     data: {"user": user, "data": data},
     url: "/database/newUser",
     success: function(data) { 
-      //refreshDOM();
+      window.location.href = 'calendar.html#' + encodeURI(user);
     }
   });
   },
@@ -101,8 +101,10 @@ var calendar = {
     calendar.user = user;
   }
 
+}
 
-
+var addEvent = {
+  add: function() {}
 }
 
 
@@ -313,17 +315,23 @@ function getEventIndex(user, classIndex, eventName) {
 
 // }
 
+function checkLocation() {
+  var pathname = window.location.pathname;
+
+}
+
 $(document).ready(function() {
     getAll();
     index.init();
-    var pathname = window.location.pathname;
-    console.log("path = ", pathname);
+    
+    //console.log("path = ", pathname);
     //var data = stringManipulationOn(window.location.href);
     var userIndex = window.location.href.indexOf("#");
     //console.log(userIndex);
     user = undefined;
     if (userIndex !== -1) user = window.location.href.slice(userIndex+1);
     console.log("user = ", user);
+    checkLocation();
   });
 
 
