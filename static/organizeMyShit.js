@@ -63,7 +63,6 @@ var index = {
 
 var signup = {
   init: function() {
-    signup.signup();
   },
 
   signup: function() {
@@ -79,10 +78,13 @@ var signup = {
     if (user.val() in database) signup.userTaken = true;
     if (signup.passDiff === false && signup.userTaken === false) {
       console.log("i should add user");
-      var newUser = {first: firstName.val(),
+      var newUser = {
+                    first: firstName.val(),
                     last: lastName.val(),
                     college: college.val(),
-                    password: password1.val()};
+                    password: password1.val()
+                    };
+      console.log("newuser = ", newUser);
       database[user.val()] = newUser;
       signup.addUser(user.val(), newUser);
       //window.location.href = 'calendar.html#' + encodeURI(user.val());
@@ -129,15 +131,67 @@ var calendar = {
 var addEvent = {
   init: function() {
     manageBar();
-     for (var i = 0; i < database.userString.classes.length; i++) {
-       var newOption = $("<option>");
-       var myOptions = $("[name='groups']");
-       newOption.html(database.userString.classes[i]["name"]);
-       myOptions.append(newOption);
-     }
+    //console.log("database = ", database);
+    for (var i = 0; i < database[userString].classes.length; i++) {
+      var newOption = $("<option>");
+      var myOptions = $("[name='groups']");
+      newOption.html(database[userString].classes[i]["name"]);
+      newOption.val(database[userString].classes[i]["category"]);
+      myOptions.append(newOption);
+    }
+    //myOptions.onChange(addEvent.refreshAddEvent());
+    addEvent.refreshAddEvent();
   },
 
-  add: function() {}
+  refreshAddEvent: function () {
+    var myOptions = $("#chooseClass");
+    for (var i = 0; i < myOptions[0].length; i++) {
+      if (myOptions[0][i].selected === true) {
+        var type = myOptions[0][i].value;
+        console.log("value = ", type);
+      }
+    } 
+    if (type === "organization") {
+      console.log("it is an organization");
+    }   
+
+    console.log("myOptions[0][0].selected = ", myOptions);
+  },
+
+  addEvent: function() {
+    var user = $("#user-input");
+    var className = $("#className-input");
+    var eventName = $("#eventName-input");
+    var type = $("#eventType-input");
+    var priority = $("#priority-input");
+    var due = new Date();
+    var times = $(".times");
+    var workTime = [];
+    for (i = 0; i < times.length; i++) {
+      workTime.push({'start': times[i].start,
+                    'end': times[i].end})
+    }
+    var newEvent = {"name": eventName.val(),
+                    "type": type.val(),
+                    "due": due,
+                    "priority": priority,
+                    "workTime": workTime };
+    addEventToServer(user.val(), className.val(), newEvent);
+
+    var classIndex = database.user.val().classes.indexOf(className.val());
+    database.user.val().classes[classIndex].events.push(newEvent);
+  },
+
+  addEventToServer: function (user, thisClass, event) {
+    $.ajax({
+      type: "post",
+      data: {"user": user, "class": thisClass, "event": event},
+      url: "/database/event",
+      success: function(data) {
+        //blah
+      }
+    });
+  }
 }
 
 var addClass = {
@@ -146,21 +200,24 @@ var addClass = {
   },
 
   addClass: function() {
-    var user = user;
-    var category = $(".classCategory");
+    var user = userString;
+    var categoryOptions = $(".classCategory");
     var className = $("#className");
-    console.log(user, category, className.val());
-    // addClass.addClassToServer(user, category.val(), className.val());
+    if (categoryOptions[0].checked === true) {
+      var category = categoryOptions[0];
+    } else if (categoryOptions[1].checked === true) {
+      var category = categoryOptions[1];
+    }
+    console.log(user, category.value, className.val());
+    addClass.addClassToServer(user, category.value, className.val());
 
-    // var newClass = {"category": category.val(),
-    //                 "name": className.val(),
-    //                 "events": []};
-
-    // database.user.classes.push(newClass);
-    // user.val("");
-    // category.val("");
-    // className.val("");
-    // refreshDOM();
+    var newClass = {"category": category.value,
+                    "name": className.val(),
+                    "events": []};
+    if (database[user].classes === undefined) database[user].classes = [];
+    database[user].classes.push(newClass);
+    className.val("");
+    addClass.refreshAddClass();
   },
 
   addClassToServer: function (user, category, name) {
@@ -172,6 +229,10 @@ var addClass = {
         //refreshDOM();
       }
     });
+  },
+
+  refreshAddClass: function() {
+
   }
 }
 
@@ -183,40 +244,7 @@ var listings = {
 
 
 
-function addEvent() {
-  var user = $("#user-input");
-  var className = $("#className-input");
-  var eventName = $("#eventName-input");
-  var type = $("#eventType-input");
-  var priority = $("#priority-input");
-  var due = new Date();
-  var times = $(".times");
-  var workTime = [];
-  for (i = 0; i < times.length; i++) {
-    workTime.push({'start': times[i].start,
-                  'end': times[i].end})
-  }
-  var newEvent = {"name": eventName.val(),
-                  "type": type.val(),
-                  "due": due,
-                  "priority": priority,
-                  "workTime": workTime };
-  addEventToServer(user.val(), className.val(), newEvent);
 
-  var classIndex = database.user.val().classes.indexOf(className.val());
-  database.user.val().classes[classIndex].events.push(newEvent);
-}
-
-function addEventToServer(user, thisClass, event) {
-  $.ajax({
-    type: "post",
-    data: {"user": user, "class": thisClass, "event": event},
-    url: "/database/event",
-    success: function(data) {
-      //blah
-    }
-  });
-}
 
 
 
@@ -226,8 +254,9 @@ function getAll() {
       url: "/database",
       success: function(data) {
         database = data.database;
-        console.log(database);
-        //refreshDOM();
+        console.log("data.database getAll = ", data.database);
+        console.log("database getAll = ", database);
+        itIsReady();
       }
     });
   }
@@ -391,14 +420,15 @@ $(document).ready(function() {
     getAll();
     //console.log("path = ", pathname);
     //var data = stringManipulationOn(window.location.href);
-    var userIndex = window.location.href.indexOf("#");
-    //console.log(userIndex);
+   });
+
+function itIsReady () {
+  var userIndex = window.location.href.indexOf("#");
+    console.log("database = ", database);
     userString = undefined;
     if (userIndex !== -1) userString = window.location.href.slice(userIndex+1);
     console.log("user = ", userString);
     currentState = checkLocation();
     console.log("state = ", currentState);
     manageState(currentState);
-   });
-
-
+}

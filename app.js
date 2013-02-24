@@ -60,7 +60,7 @@ function writeFile(filename, data, callbackFn) {
 
 // get all items
 app.get("/database", function(request, response){
-  console.log(database["shubhit"]);
+  console.log("database: ", database);
   response.send({
     database: database,
     success: true
@@ -104,6 +104,7 @@ app.post("/database", function(request, response) {
       (newClass.name !== undefined);
 
   if (successful) {
+    if (database[user].classes === undefined) database[user].classes = [];
     database[user].classes.push(newClass);
     writeFile("data.txt", JSON.stringify(database));
   } else {
