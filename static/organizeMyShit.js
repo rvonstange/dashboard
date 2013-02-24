@@ -144,6 +144,34 @@ var addEvent = {
 var addClass = {
   init: function() {
     manageBar();
+  },
+
+  addClass: function() {
+    var user = $("#user-input");
+    var category = $("#category-input");
+    var className = $("#className-input");
+    addClass.addClassToServer(user.val(), category.val(), className.val());
+
+    var newClass = {"category": category.val(),
+                    "name": className.val(),
+                    "events": []};
+
+    database.user.val().classes.push(newClass);
+    user.val("");
+    category.val("");
+    className.val("");
+    refreshDOM();
+  },
+
+  addClassToServer: function (user, category, name) {
+    $.ajax({
+      type: "post",
+      data: {"user": user, "category": category, "name": name},
+      url: "/database",
+      success: function(data) { 
+        //refreshDOM();
+      }
+    });
   }
 }
 
@@ -153,22 +181,7 @@ var listings = {
   }
 }
 
-function addClass() {
-	var user = $("#user-input");
-	var category = $("#category-input");
-	var className = $("#className-input");
-	addClassToServer(user.val(), category.val(), className.val());
 
-	var newClass = {"category": category.val(),
-                  "name": className.val(),
-                  "events": []};
-
-    database.user.val().classes.push(newClass);
-    user.val("");
-    category.val("");
-    className.val("");
-    refreshDOM();
-}
 
 function addEvent() {
   var user = $("#user-input");
@@ -205,16 +218,7 @@ function addEventToServer(user, thisClass, event) {
   });
 }
 
-function addClassToServer(user, category, name) {
-  $.ajax({
-    type: "post",
-    data: {"user": user, "category": category, "name": name},
-    url: "/database",
-    success: function(data) { 
-      //refreshDOM();
-    }
-  });
-}
+
 
 function getAll() {
     $.ajax({
