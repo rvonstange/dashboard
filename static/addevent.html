@@ -33,10 +33,6 @@
 						</select>
 					</td>
 				</tr>
-				<tr id ="eventName">
-					<td><label for="eventName">Event Name: </label></td>
-					<td><input type ="text" name = "eventName"></td>
-				</tr>
 				<tr id ="type">
 					<td><label for="type">Type: </label></td>
 					<td>				
@@ -49,15 +45,19 @@
 						</select>
 					</td>
 				</tr>
+				<tr id ="eventName">
+					<td><label for="eventName">Event Name: </label></td>
+					<td><input type ="text" name = "eventName"></td>
+				</tr>
 				<tr id ="priority">
 					<td><label for="priority">Priority: </label></td>
-					<td class="priorityButtons"><input type="radio" name="priority" value="high" /> High</td>
-					<td class="priorityButtons"><input type="radio" name="priority" value="medium" /> Medium</td>
-					<td class="priorityButtons"><input type="radio" name="priority" value="low" /> Low</td>
+					<td id="hpriorityButtons"><input type="radio" name="priority" value="high" /> High</td>
+					<td id="mpriorityButtons"><input type="radio" name="priority" value="medium" /> Medium</td>
+					<td id="lpriorityButtons"><input type="radio" name="priority" value="low" /> Low</td>
 				</tr>
 				<tr id="dueDate">
 					<td><label for="dueDate">Due Date: </label></td>
-					<td><input type="text" name="dueDate" /></td>
+					<td><input type="date" name="dueDate" /></td>
 				</tr>
 				</table>
 			</form>
