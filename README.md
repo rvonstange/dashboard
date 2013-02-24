@@ -6,7 +6,7 @@ To-do:
 get calendar canvas working.
 Get google-search-like responsive typing for forms
 Get dataes and times to be input correctly
-Add event page: get the form to change based on the 'type' input.
+Add event page: get the form to change based on the 'type' input
 
 
 
