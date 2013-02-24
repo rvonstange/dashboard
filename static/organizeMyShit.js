@@ -3,7 +3,26 @@
 var database;
 
 function manageBar() {
-  
+  var calendar = $("#calendarBar");
+  calendar.click(function(){
+    window.location.href = 'calendar.html#' + encodeURI(userString);
+  });
+  var listings = $("#listingsBar");
+  listings.click(function(){
+    window.location.href = 'listings.html#' + encodeURI(userString);
+  });
+  var addClasses = $("#classBar");
+  console.log("addclass: ", addClasses);
+  var hello = addClasses.html();
+  console.log(hello);
+  addClasses.click(function(){
+    console.log("i come here!");
+    window.location.href = 'addClass.html#' + encodeURI(userString);
+  });
+  var addEvents = $("#eventBar");
+  addEvents.click(function(){
+    window.location.href = 'addEvent.html#' + encodeURI(userString);
+  });
 }
 
 var index = {
@@ -103,24 +122,29 @@ var signup = {
 
 var calendar = {
   init: function() {
-    console.log(user);
+    console.log("im in calendar.init")
+    manageBar();
   }
 }
 
 var addEvent = {
   init: function() {
-
+    manageBar();
   },
 
   add: function() {}
 }
 
 var addClass = {
-  init: function() {}
+  init: function() {
+    manageBar();
+  }
 }
 
 var listings = {
-  init: function() {}
+  init: function() {
+    manageBar();
+  }
 }
 
 function addClass() {
@@ -130,7 +154,7 @@ function addClass() {
 	addClassToServer(user.val(), category.val(), className.val());
 
 	var newClass = {"category": category.val(),
-                  "className": className.val(),
+                  "name": className.val(),
                   "events": []};
 
     database.user.val().classes.push(newClass);
@@ -334,7 +358,7 @@ function getEventIndex(user, classIndex, eventName) {
 
 function checkLocation() {
   var pathname = window.location.pathname;
-  var pages = ["index", "signup", "addclass", "addevent", "calendar", "listings"];
+  var pages = ["index", "signup", "addClass", "addEvent", "calendar", "listings"];
   var currentState = undefined;
   for (i = 0; i < pages.length; i++) {
     if (pathname.indexOf(pages[i]) !== -1) {
@@ -347,8 +371,8 @@ function checkLocation() {
 function manageState(state) {
   if (state === "index") index.init();
   if (state === "signup") signup.init();
-  if (state === "addclass") addClass.init();
-  if (state === "addevent") addEvent.init();
+  if (state === "addClass") addClass.init();
+  if (state === "addEvent") addEvent.init();
   if (state === "calendar") calendar.init();
   if (state === "listings") listings.init();
 }
@@ -359,11 +383,12 @@ $(document).ready(function() {
     //var data = stringManipulationOn(window.location.href);
     var userIndex = window.location.href.indexOf("#");
     //console.log(userIndex);
-    user = undefined;
-    if (userIndex !== -1) user = window.location.href.slice(userIndex+1);
-    console.log("user = ", user);
+    userString = undefined;
+    if (userIndex !== -1) userString = window.location.href.slice(userIndex+1);
+    console.log("user = ", userString);
     currentState = checkLocation();
+    console.log("state = ", currentState);
     manageState(currentState);
-  });
+   });
 
 

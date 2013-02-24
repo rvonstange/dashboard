@@ -45,7 +45,7 @@ li {
 	z-index: 1;
 }
 
-#bar a {
+#bar button {
 	font-size: 30px;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -56,7 +56,7 @@ li {
 	text-shadow: 1px 1px white;
 }
 
-#bar a:hover {
+#bar button:hover {
 	background-color: #7ABCF9;
 	border-top: 1px solid white;
 	border-right: 1px solid #333;
