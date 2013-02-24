@@ -135,7 +135,6 @@ var addEvent = {
        newOption.html(database.userString.classes[i]["name"]);
        myOptions.append(newOption);
      }
-   }
   },
 
   add: function() {}
@@ -147,20 +146,21 @@ var addClass = {
   },
 
   addClass: function() {
-    var user = $("#user-input");
-    var category = $("#category-input");
-    var className = $("#className-input");
-    addClass.addClassToServer(user.val(), category.val(), className.val());
+    var user = user;
+    var category = $(".classCategory");
+    var className = $("#className");
+    console.log(user, category, className.val());
+    // addClass.addClassToServer(user, category.val(), className.val());
 
-    var newClass = {"category": category.val(),
-                    "name": className.val(),
-                    "events": []};
+    // var newClass = {"category": category.val(),
+    //                 "name": className.val(),
+    //                 "events": []};
 
-    database.user.val().classes.push(newClass);
-    user.val("");
-    category.val("");
-    className.val("");
-    refreshDOM();
+    // database.user.classes.push(newClass);
+    // user.val("");
+    // category.val("");
+    // className.val("");
+    // refreshDOM();
   },
 
   addClassToServer: function (user, category, name) {
