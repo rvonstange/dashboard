@@ -1,4 +1,3 @@
-
 //global datastore
 var database;
 
@@ -130,6 +129,13 @@ var calendar = {
 var addEvent = {
   init: function() {
     manageBar();
+     for (var i = 0; i < database.userString.classes.length; i++) {
+       var newOption = $("<option>");
+       var myOptions = $("[name='groups']");
+       newOption.html(database.userString.classes[i]["name"]);
+       myOptions.append(newOption);
+     }
+   }
   },
 
   add: function() {}
