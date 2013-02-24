@@ -1,3 +1,4 @@
+/*General CSS*/
 body {
 	font-family: 'Wendy One', sans-serif;
 }
@@ -6,7 +7,9 @@ body {
 	width: 1098px;
 	margin: auto;
 	display: block;
+	position: relative;
 }
+
 .title {
 	font-size: 70px;
 	text-align: left;
@@ -15,51 +18,31 @@ body {
 	text-shadow: 2px 2px white;
 }
 
-#signup_title {
-	font-size: 50px;
-}
-
-#addEvent_title {
-	font-size: 50px;
-	position: relative;
-}
-
-#priority {
-	width:20px;
-}
-.priorityButtons {
-	width: 40px;
-
-}
-#eventTable {
-	table-layout: fixed;
-}
 .inputs {
 	position: relative;
 	top: 150px;
 	font-size: 15px;
 }
 
-#signup_form {
-	font-size: 15px;
+li {
+	margin: 0px;
+	display: inline-block;
 }
 
-#bar {
-	display: block;
-}
-
+/*Used for the Top Bar*/
 #bar ul {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 	position: fixed;
 	top: 0;
-	height: 100px;
+	height: 102px;
 	width: 1098px;
 	text-align: left;
 	padding-top: 15px;
 	box-shadow: 0px 0px 8px 0px #000000;
 	background-color: #488AC7;
+	z-index: 1;
 }
 
 #bar a {
@@ -81,8 +64,69 @@ body {
 	border-bottom: 1px solid #333;
 }
 
-li {
-	margin: 0px;
-	display: inline-block;
+#bar {
+	display: block;
+}
+
+/*Sign Up Page*/
+#signup_title {
+	font-size: 50px;
+}
+
+#signup_form {
+	font-size: 15px;
+}
+
+/*Add Event Page*/
+#addEvent_title {
+	font-size: 50px;
+	position: relative;
+}
+
+#priority {
+	width:20px;
+}
+
+.priorityButtons {
+	width: 40px;
+}
+
+#eventTable {
+	table-layout: fixed;
+}
+
+
+
+/*Calendar Page*/
+#calendar {
+	font-size: 40px;
+}
+
+
+#sidebar {
+	width: 165px;
+}
+
+#sidebar ul {
+	height: 100%;
+	width: 165px;
+	top: 118px;
+	left: 0px;
+	list-style-type: none;
+	background-color: #488AC7;
+	position: relative;
+	box-shadow: 0px 0px 8px 0px #000000;
+
+}
+#calendarCanvas {
+	top: 118px;
+	left: 165px;
+	width: 933px;
+	height: 100%;
+	border:3px solid #000000;
+	position: absolute;
+	display: block;
+	margin: auto;
+
 }
 
