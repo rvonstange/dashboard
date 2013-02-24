@@ -2,12 +2,15 @@
 //global datastore
 var database;
 
+function manageBar() {
+  
+}
+
 var index = {
   init: function() {
     index.invalidUser = false;
     index.invalidPass = false;
   },
-
 
   login: function() {
     var user = $("#user-input");
@@ -17,14 +20,13 @@ var index = {
       console.log("im here shit");
       //window.location = $(this).attr('href', "calendar.html") + '?sessionid=user.val()';
       window.location.href = 'calendar.html#' + encodeURI(user.val());
-      calendar.init(user.val());
+      //calendar.init(user.val());
     }
     else {
       if (!(user.val() in database)) index.invalidUser = true;
       else index.invalidPass = true;
       index.refreshLogin();
     }
-
   },
 
   refreshLogin: function() {
@@ -42,6 +44,10 @@ var index = {
 }
 
 var signup = {
+  init: function() {
+    signup.signup();
+  },
+
   signup: function() {
     signup.userTaken = false;
     signup.passDiff = false;
@@ -96,17 +102,26 @@ var signup = {
 
 
 var calendar = {
-  init: function(user) {
+  init: function() {
     console.log(user);
-    calendar.user = user;
   }
-
 }
 
 var addEvent = {
+  init: function() {
+
+  },
+
   add: function() {}
 }
 
+var addClass = {
+  init: function() {}
+}
+
+var listings = {
+  init: function() {}
+}
 
 function addClass() {
 	var user = $("#user-input");
@@ -315,15 +330,31 @@ function getEventIndex(user, classIndex, eventName) {
 
 // }
 
+
+
 function checkLocation() {
   var pathname = window.location.pathname;
+  var pages = ["index", "signup", "addclass", "addevent", "calendar", "listings"];
+  var currentState = undefined;
+  for (i = 0; i < pages.length; i++) {
+    if (pathname.indexOf(pages[i]) !== -1) {
+      currentState = pages[i];
+    }
+  }
+  return currentState;
+}
 
+function manageState(state) {
+  if (state === "index") index.init();
+  if (state === "signup") signup.init();
+  if (state === "addclass") addClass.init();
+  if (state === "addevent") addEvent.init();
+  if (state === "calendar") calendar.init();
+  if (state === "listings") listings.init();
 }
 
 $(document).ready(function() {
     getAll();
-    index.init();
-    
     //console.log("path = ", pathname);
     //var data = stringManipulationOn(window.location.href);
     var userIndex = window.location.href.indexOf("#");
@@ -331,7 +362,8 @@ $(document).ready(function() {
     user = undefined;
     if (userIndex !== -1) user = window.location.href.slice(userIndex+1);
     console.log("user = ", user);
-    checkLocation();
+    currentState = checkLocation();
+    manageState(currentState);
   });
 
 
