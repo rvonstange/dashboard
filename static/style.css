@@ -70,13 +70,60 @@ li {
 }
 
 /*	Login Page (index.html)	*/
-.index form 	{
-	padding-top: 120px;
-	
-}
 
 .index #bar 	{
+	/*padding-bottom: 20px;*/
+}
+
+.index	{
+	background-color: #add8e6;
+	box-shadow: 0px 0px 8px 0px #000000;
+	height: 100%;
+	padding-bottom: 0px;
+}
+
+.index h2	{
+	font-size: 25px;
+	margin-bottom: 15px;
+	margin-top: 50px;
+}
+
+.content 	{
+	padding-top: 120px;
+	text-align: center;
+	/*padding-left: 20px;*/
+	margin: auto auto;
+	/*display: grid;
+	grid-template: "login signup";
+	grid-column-definition: auto auto;
+	grid-row-definition: auto;*/
+}
+
+#Login	{
+	/*display: inline;*/
 	padding-bottom: 20px;
+	border-bottom: 2px solid #000000;
+	/*grid-column-position: 1;
+	grid-row-position: 1;
+	/*grid-area: "login";*/	*/
+}
+
+[type="submit"]	{
+	font-size: 18px;
+	margin: 20px 0;
+	padding: 5px;
+	border-radius: 5px;
+	/*background-color: #1e90ff;*/
+	background-color: rgba(30,144,255, .8);
+	color: #f5f5f5;
+}
+
+#Signup	{
+	/*display: inline;*/
+	padding-bottom: 100px;
+	/*grid-column-position: 2;
+	grid-row-position: 1;
+	grid-area: "signup";*/
 }
 
 

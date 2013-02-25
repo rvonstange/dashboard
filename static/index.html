@@ -3,11 +3,11 @@
 	<head>
 	  <link href="reset.css" rel="stylesheet" type="text/css">
 	  <link href="style.css" rel="stylesheet" type="text/css">
+	  <link href='http://fonts.googleapis.com/css?family=Wendy+One' rel='stylesheet' type='text/css'>
 
 	</head>
 
 	<body> 
-
 
 		<div class="page index">
 			<div id="bar">
@@ -16,24 +16,29 @@
 				</ul>
 			</div>
 		
-			<form name="loginForm" action="javascript:index.login()">
-				<div id ="usernameField">
-					<label for="username">Username: </label>
-					<input id = "user-input" type ="text" name = "username"	placeholder="Kanye West">
-				</div>
-				<div id="passwordField">
-					<label for="password">Password: </label>
-					<input id = "password-input" type="password" name="password" placeholder="thatShitCray"/>
-				</div>
-				<div>
-					<input id="submitButton" name="Submit"  type="submit" value="Login"/>
-				</div>
-			</form>
-			<div id="loginFail"></div>
-			<div id="buttons">
-				<form action="signup.html">
-					<input type="submit" value="Sign Up" />	
+			<div class="content">
+				<form id="Login" name="loginForm" action="javascript:index.login()">
+					<h2>Existing Users</h2>
+					<div id ="usernameField">
+						<label for="username">Username: </label>
+						<input id = "user-input" type ="text" name = "username"	placeholder="Kanye West">
+					</div>
+					<div id="passwordField">
+						<label for="password">Password: </label>
+						<input id = "password-input" type="password" name="password" placeholder="thatShitCray"/>
+					</div>
+					<div>
+						<input id="submitButton" name="Submit"  type="submit" value="Login"/>
+					</div>
 				</form>
+
+				<!-- <div id="loginFail"></div> -->
+				<div id="buttons">
+					<h2>New Users</h2>
+					<form action="signup.html" id="Signup" name="SignUp">
+						<input type="submit" value="Sign Up" />	
+					</form>
+				</div>
 			</div>
 		</div>
 
