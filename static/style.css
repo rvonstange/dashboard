@@ -69,6 +69,18 @@ li {
 	display: block;
 }
 
+/*	Login Page (index.html)	*/
+.index form 	{
+	padding-top: 120px;
+	
+}
+
+.index #bar 	{
+	padding-bottom: 20px;
+}
+
+
+
 /*Sign Up Page*/
 #signup_title {
 	font-size: 50px;
