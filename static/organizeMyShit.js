@@ -133,6 +133,8 @@ var cal = {
     cal.leftMargin = 48;
     cal.topMargin = 70;
     cal.dayWidth = (cal.width - cal.leftMargin) / 7;
+    cal.hourHeight = 40;
+    cal.fiftHeight = cal.hourHeight / 4;
     cal.drawGrid();
     cal.drawDays();
     cal.drawDates();
@@ -148,7 +150,7 @@ var cal = {
   },
 
   drawDays: function () {
-    var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
     days.forEach(function(element, i) {
       cal.ctx.font = "15px Times";
@@ -158,20 +160,69 @@ var cal = {
   },
 
   drawGrid: function() {
-    for (i = 0; i < 7; i++) {
+    //draw verticle day lines
+    for (var i = 0; i < 7; i++) {
       cal.ctx.beginPath();
       cal.ctx.moveTo(cal.leftMargin + cal.dayWidth*i, 0);
       cal.ctx.lineTo(cal.leftMargin + cal.dayWidth*i, cal.height);
       cal.ctx.closePath();
       cal.ctx.stroke();
     }
-    cal.ctx.beginPath();
-    cal.ctx.moveTo(0, cal.topMargin);
-    cal.ctx.lineTo(cal.width, cal.topMargin);
-    cal.ctx.closePath();
-    cal.ctx.stroke();
-    //cal.ctx.fillRect(0, 0, cal.width, cal.height);
+    for (var i = 0; i < 24; i++) {
+      //draw horizontal hour lines
+      cal.ctx.beginPath();
+      cal.ctx.moveTo(cal.leftMargin, cal.topMargin + cal.hourHeight*i);
+      cal.ctx.lineTo(cal.width, cal.topMargin + cal.hourHeight*i);
+      cal.ctx.closePath();
+      cal.ctx.lineWidth = 1;
+      cal.ctx.stroke();
+      //draw time text on left margin
+      cal.ctx.font = "12px Times";
+      cal.ctx.textAlign = "center";
+      var timeString = String(i);
+      var stamp = " AM";
+      if (i == 0) timeString = "12";
+      if (i > 11) stamp = " PM";
+      if (i > 12) timeString = String(i - 12);
+      cal.ctx.fillText(timeString+stamp, (3/5)*cal.leftMargin, (16/15)*cal.topMargin + cal.hourHeight*i);
+      //draw horizontal half hour lines
+      cal.ctx.beginPath();
+      cal.ctx.moveTo(cal.leftMargin, cal.topMargin + (cal.hourHeight / 2) + cal.hourHeight*i);
+      cal.ctx.lineTo(cal.width, cal.topMargin + (cal.hourHeight / 2) + cal.hourHeight*i);
+      cal.ctx.closePath();
+      cal.ctx.lineWidth = 0.2;
+      cal.ctx.stroke();
+    }
+    cal.firstBox = new cal.Box(new Date(2013, 2, 23, 8, 35), new Date(2013, 2, 23, 10, 35));
+    cal.firstBox.draw();
+  },
+
+  Box: function(start, end) {
+    this.start = start;
+    this.startHour = start.getHours;
+    this.startMinutes = start.getMinutes;
+    this.startMinInt = this.startMinutes / 15;
+    this.end = end;
+    this.endHour = end.getHours;
+    this.endMinutes = end.getMinutes;
+    this.endMinInt = this.endMinutes / 15;
+    this.draw = function() {
+      console.log("here");
+      var x = 1;
+      var y = cal.topMargin + this.startHour*cal.hourHeight + this.startMinInt*cal.fiftHeight;
+      var y1 = cal.topMargin + this.endHour*cal.hourHeight + this.endMinInt*cal.fiftHeight;
+      var height = y1 - y;
+      var radius = 5;
+      var width = cal.dayWidth;
+      roundedRect(cal.ctx, x, y, width, height, radius)
+    }
   }
+
+  // Box.prototype.draw: function() {
+    
+  // }
+  
+
 }
 
 var addEvent = {
@@ -540,9 +591,20 @@ var listings = {
 }
 
 
-
-
-
+// from: https://developer.mozilla.org/en-US/docs/Canvas_tutorial/Drawing_shapes
+function roundedRect(ctx,x,y,width,height,radius){
+    ctx.beginPath();
+    ctx.moveTo(x,y+radius);
+    ctx.lineTo(x,y+height-radius);
+    ctx.quadraticCurveTo(x,y+height,x+radius,y+height);
+    ctx.lineTo(x+width-radius,y+height);
+    ctx.quadraticCurveTo(x+width,y+height,x+width,y+height-radius);
+    ctx.lineTo(x+width,y+radius);
+    ctx.quadraticCurveTo(x+width,y,x+width-radius,y);
+    ctx.lineTo(x+radius,y);
+    ctx.quadraticCurveTo(x,y,x,y+radius);
+    ctx.fill();
+}
 
 
 function getAll() {
