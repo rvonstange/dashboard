@@ -1,1 +1,1 @@
-{"rob":{"first":"Rob","last":"von Stange","college":"CMU","password":"weed","classes":[{"category":"organization","name":"Drugs","events":[]},{"category":"class","name":"15-237","events":[]}]}}
+{"rob":{"first":"Rob","last":"von Stange","college":"CMU","password":"weed","classes":[{"category":"organization","name":"Drugs","events":[]},{"category":"class","name":"15-237","events":[]}]},"shubhit":{"first":"Shubhit","last":"Singh","college":"CMU","password":"hello","classes":[{"category":"class","name":"15-237","events":[]}]}}
