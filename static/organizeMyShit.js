@@ -189,19 +189,270 @@ var addEvent = {
     addEvent.refreshAddEvent();
   },
 
-  refreshAddEvent: function () {
+ refreshAddEvent: function () {
+    var classOptions = ["","Office Hours", "Homework", "Exam", "Quiz", "Lecture"];
     var myOptions = $("#chooseClass");
     for (var i = 0; i < myOptions[0].length; i++) {
       if (myOptions[0][i].selected === true) {
         var type = myOptions[0][i].value;
-        console.log("value = ", type);
+        console.log(myOptions[0][i]);
+        console.log(myOptions[0]);
       }
-    } 
-    if (type === "organization") {
-      console.log("it is an organization");
-    }   
+    }
+      var myTypeOptions = $("#chooseEventType");
+      
+      if (type === "organization") {
+        $("#eventTable").find("tr:gt(3)").remove();
+        myTypeOptions.empty();
+        var activity = $("<option>");
+        activity.html("Activity");
+        myTypeOptions.append(activity);
+        addEvent.createTimeChoice();
+        addEvent.recurringEvent();
+        $('#recurNo').change(function() {
+          $("#eventTable").find("tr:gt(5)").remove();
+          if ($('#recurNo').val() === "no") addEvent.createDays();
+        });
+        $('#recurYes').change(function() {
+          $("#eventTable").find("tr:gt(5)").remove();
+          if ($('#recurYes').val() === "yes") addEvent.createCalendarChoice();
+        });
+      }
+      else if (type === "class") {
+        $("#eventTable").find("tr:gt(3)").remove();
+        myTypeOptions.empty();        
+        for (var j = 0; j < classOptions.length; j++) {
+          var newClassOption = $("<option>");
+          newClassOption.html(classOptions[j]);
+          myTypeOptions.append(newClassOption);
+        }      
+      }
+      $('#chooseClass').change(function() {
+        addEvent.refreshAddEvent();
+      });
 
-    console.log("myOptions[0][0].selected = ", myOptions);
+//This is used to change the page based on the type of event chosen
+      // for (var k = 0; k < myTypeOptions[0].length; k++) {
+      // if (myTypeOptions[0][k].selected === true) {
+      //   var eventToAdd = myTypeOptions[0][k].html;
+      //   console.log(myTypeOptions[0][k]);
+
+      // }
+    //}
+      $('#chooseEventType').change(function() {
+        addEvent.refreshLowerEventPage();
+      });
+
+
+    console.log("myOptions[0][0].selected = ", $("select#chooseEventType option:eq(0)").text());
+  },
+    hwDueTime: function() {
+    var startHour = $("<select>");
+    startHour.attr("id", "Hour");
+    var hourOptions = [ ,1,2,3,4,5,6,7,8,9,10,11,12];
+    for (var i = 0; i < hourOptions.length; i++) {
+        var newHourOption = $("<option>");
+        newHourOption.html(hourOptions[i]);
+        startHour.append(newHourOption);
+    } 
+    var startMinute = $("<select>");
+    startMinute.attr("id", "Minute");
+    var minuteOptions = [ ,"00","15","30","45"];
+    for (var j = 0; j < minuteOptions.length; j++) {
+        var newMinuteOption = $("<option>");
+        newMinuteOption.html(minuteOptions[j]);
+        startMinute.append(newMinuteOption);
+    }
+
+    var startAMPM = $("<select>");
+    startAMPM.attr("id", "AMPM");
+    var ampmOptions = ["AM","PM"];
+    for (var k = 0; k < ampmOptions.length; k++) {
+        var newAMPMOption = $("<option>");
+        newAMPMOption.html(ampmOptions[k]);
+        startAMPM.append(newAMPMOption);
+    }
+    
+    var eventTable = $('#eventTable');
+    var newRow = $("<tr>");
+    newRow.attr("id", "hwDueTime");
+    var startMeeting = $("<td>");
+    startMeeting.html("Time Due:");
+    newRow.append(startMeeting);
+    newRow.append(startHour);
+    newRow.append(startMinute);
+    newRow.append(startAMPM);
+    eventTable.append(newRow);
+  },
+
+  createTimeChoice: function() {
+    var startHour = $("<select>");
+    var endHour = $("<select>");
+    startHour.attr("id", "startHour");
+    endHour.attr("id", "endHour");
+    var hourOptions = [ ,1,2,3,4,5,6,7,8,9,10,11,12];
+    for (var i = 0; i < hourOptions.length; i++) {
+        var newHourOption = $("<option>");
+        newHourOption.html(hourOptions[i]);
+        var newHourOption2 = $("<option>");
+        newHourOption2.html(hourOptions[i]);
+        startHour.append(newHourOption);
+        endHour.append(newHourOption2);
+    }   
+    var startMinute = $("<select>");
+    var endMinute = $("<select>");
+    startMinute.attr("id", "startMinute");
+    endMinute.attr("id", "endMinute");
+    var minuteOptions = [ ,"00","15","30","45"];
+    for (var j = 0; j < minuteOptions.length; j++) {
+        var newMinuteOption = $("<option>");
+        newMinuteOption.html(minuteOptions[j]);
+        var newMinuteOption2 = $("<option>");
+        newMinuteOption2.html(minuteOptions[j]);
+        startMinute.append(newMinuteOption);
+        endMinute.append(newMinuteOption2);
+    }
+
+    var startAMPM = $("<select>");
+    var endAMPM = $("<select>");
+    startAMPM.attr("id", "startAMPM");
+    endAMPM.attr("id", "endAMPM");
+    var ampmOptions = ["AM","PM"];
+    for (var k = 0; k < ampmOptions.length; k++) {
+        var newAMPMOption = $("<option>");
+        newAMPMOption.html(ampmOptions[k]);
+        var newAMPMOption2 = $("<option>");
+        newAMPMOption2.html(ampmOptions[k]);
+        startAMPM.append(newAMPMOption);
+        endAMPM.append(newAMPMOption2);
+    }
+    
+    var eventTable = $('#eventTable');
+    var newRow = $("<tr>");
+    newRow.attr("id", "meetingTimes");
+    var startMeeting = $("<td>");
+    startMeeting.html("Start Time:");
+    newRow.append(startMeeting);
+    newRow.append(startHour);
+    newRow.append(startMinute);
+    newRow.append(startAMPM);
+    var endMeeting = $("<td>");
+    endMeeting.html("End Time:");
+    newRow.append(endMeeting);
+    newRow.append(endHour);
+    newRow.append(endMinute);
+    newRow.append(endAMPM);
+    eventTable.append(newRow);
+  },
+
+  recurringEvent: function() {
+    var eventTable = $('#eventTable');
+    var newRow = $("<tr>");
+    var question = $("<td>");
+    question.html("One Time Event?");
+    var buttons = $("<td>");
+    buttons.attr("class","buttons");
+    buttons.append('<input type="radio" id="recurYes" name="recur" value="yes" />Yes');
+    buttons.append('<input type="radio" id="recurNo" name="recur" value="no" />No');
+    newRow.append(question);
+    newRow.append(buttons);
+    eventTable.append(newRow);
+  },
+
+  recitation: function() {
+    var eventTable = $('#eventTable');
+    var newRow = $("<tr>");
+    var question = $("<td>");
+    question.html("Recitation?");
+    var buttons = $("<td>");
+    buttons.attr("class","buttons");
+    buttons.append('<input type="radio" id="recitationYes" name="recitation" value="yes" />Yes');
+    buttons.append('<input type="radio" id="recitationNo" name="recitation" value="no" />No');
+    newRow.append(question);
+    newRow.append(buttons);
+    eventTable.append(newRow);
+  },
+
+  createDays: function () {
+    var eventTable = $('#eventTable');
+    var newRow = $("<tr>");
+    var question = $("<td>");
+    question.html("Choose Days: ");
+    var buttons = $("<td>");
+    var satButton = $("<td>");
+    buttons.attr("class","buttons");
+    buttons.append('<input type="checkbox" value="sunday" />Sun');
+    buttons.append('<input type="checkbox" value="monday" />M');
+    buttons.append('<input type="checkbox" value="tuesday" />T');
+    buttons.append('<input type="checkbox" value="wednesday" />W');
+    buttons.append('<input type="checkbox" value="thursday" />Th');
+    buttons.append('<input type="checkbox" value="friday" />F');
+    satButton.append('<input type="checkbox" value="saturday" />Sat');
+    newRow.append(question);
+    newRow.append(buttons);
+    newRow.append(satButton);
+    eventTable.append(newRow);
+
+  },
+
+  createCalendarChoice: function(message) {
+    if (message === undefined) message = "Choose Day: ";
+    var eventTable = $('#eventTable');
+    var newRow = $("<tr>");
+    var question = $("<td>");
+    question.html(message);
+    var calendar = $("<td>");
+    calendar.append('<input type="date" name="dayOfEvent" />');
+    newRow.append(question);
+    newRow.append(calendar);
+    eventTable.append(newRow);
+  },
+
+  refreshLowerEventPage: function () {
+    //Office Hours
+    var myTypeOptions = $("#chooseEventType");
+    for (var i = 0; i < myTypeOptions[0].length; i++) {
+      if (myTypeOptions[0][i].selected === true) {
+        var name = $("select#chooseEventType option:eq(" + i + ")").text();
+      }
+    }
+    $("#eventTable").find("tr:gt(3)").remove();
+    if ((name === "Exam") || (name === "Quiz")){
+      addEvent.createTimeChoice();
+      addEvent.createCalendarChoice();
+    }
+    else if (name === "Office Hours") {
+        addEvent.createTimeChoice();
+        addEvent.recurringEvent();
+        $('#recurNo').change(function() {
+          $("#eventTable").find("tr:gt(5)").remove();
+          if ($('#recurNo').val() === "no") addEvent.createDays();
+        });
+        $('#recurYes').change(function() {
+          $("#eventTable").find("tr:gt(5)").remove();
+          if ($('#recurYes').val() === "yes") addEvent.createCalendarChoice();
+        });
+    }
+    else if (name === "Lecture") {
+      addEvent.createTimeChoice();
+      addEvent.createDays();
+      addEvent.recitation();
+      $('#recitationNo').change(function() {
+          $("#eventTable").find("tr:gt(6)").remove();
+          });
+      $('#recitationYes').change(function() {
+          $("#eventTable").find("tr:gt(6)").remove();
+          if ($('#recitationYes').val() === "yes") {
+            addEvent.createTimeChoice();
+            addEvent.createDays();
+          }
+        });
+    }
+    else if (name === "Homework") {
+      addEvent.createCalendarChoice("Due Date: ");
+      addEvent.hwDueTime();
+    }
+
   },
 
   addEvent: function() {
