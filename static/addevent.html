@@ -21,10 +21,10 @@
 		<div class="inputs">
 			<h2 class="title" id="addEvent_title">Add Event</h2>
 			<br>
-			<form id="addEventForm">
+			<form id="addEventForm" action="javascript:addEvent.addEvent()">
 				<table id="eventTable">
 				<tr id ="dropDown_classes">
-					<td><label for="dropDown_classes">Choose Class: </label></td>
+					<td><label class= "startingQuestions" for="dropDown_classes">Choose Class: </label></td>
 					<td>
 						<select id="chooseClass" name= "groups">
 							
@@ -32,32 +32,26 @@
 					</td>
 				</tr>
 				<tr id ="type">
-					<td><label for="type">Type: </label></td>
+					<td><label class= "startingQuestions" for="type">Type: </label></td>
 					<td>				
-						<select name= "type">
-							<option value="Office Hours">Office Hours</option>
-							<option value="Homework">Homework</option>
-							<option value="Quiz">Quiz </option>
-							<option value="Midterm">Exam </option>
-							<option value="Masturbate">Masturbate </option>
+						<select id="chooseEventType" name= "type">
 						</select>
 					</td>
 				</tr>
 				<tr id ="eventName">
-					<td><label for="eventName">Event Name: </label></td>
+					<td><label class= "startingQuestions" for="eventName">Event Name: </label></td>
 					<td><input type ="text" name = "eventName"></td>
 				</tr>
 				<tr id ="priority">
-					<td><label for="priority">Priority: </label></td>
-					<td id="hpriorityButtons"><input type="radio" name="priority" value="high" /> High</td>
-					<td id="mpriorityButtons"><input type="radio" name="priority" value="medium" /> Medium</td>
-					<td id="lpriorityButtons"><input type="radio" name="priority" value="low" /> Low</td>
-				</tr>
-				<tr id="dueDate">
-					<td><label for="dueDate">Due Date: </label></td>
-					<td><input type="date" name="dueDate" /></td>
+					<td><label class= "startingQuestions" for="priority">Priority: </label></td>
+					<td id="priorityButtons">
+						<input type="radio" name="priority" value="high"/>High
+						<input type="radio" name="priority" value="medium"/>Medium
+						<input type="radio" name="priority" value="low"/>Low
+					</td>
 				</tr>
 				</table>
+				<input type="submit" value="Add Event">
 			</form>
 		</div>
 	</div>
