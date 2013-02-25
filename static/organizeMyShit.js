@@ -121,10 +121,56 @@ var signup = {
 
 
 
-var calendar = {
+var cal = {
   init: function() {
-    console.log("im in calendar.init")
+    console.log("im in cal.init")
     manageBar();
+    cal.canvas = $("#calendarCanvas")[0];
+    cal.ctx = cal.canvas.getContext("2d");
+    console.log("canvas = ", cal.canvas, ", ctx = ", cal.ctx);
+    cal.width = cal.canvas.width;
+    cal.height = cal.canvas.height;
+    cal.leftMargin = 48;
+    cal.topMargin = 70;
+    cal.dayWidth = (cal.width - cal.leftMargin) / 7;
+    cal.drawGrid();
+    cal.drawDays();
+    cal.drawDates();
+  },
+
+  drawDates: function() {
+    var dates = ["1", "2", "3", "4", "5", "6", "7"];
+    dates.forEach(function(element, i) {
+      cal.ctx.font = "bold 20px Times";
+      cal.ctx.textAlign = "center";
+      cal.ctx.fillText(element, cal.leftMargin + (cal.dayWidth / 2) + cal.dayWidth*i, (2/5)*cal.topMargin);
+    })
+  },
+
+  drawDays: function () {
+    var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+    days.forEach(function(element, i) {
+      cal.ctx.font = "15px Times";
+      cal.ctx.textAlign = "center";
+      cal.ctx.fillText(element, cal.leftMargin + (cal.dayWidth / 2) + cal.dayWidth*i, (4/5)*cal.topMargin);
+    })
+  },
+
+  drawGrid: function() {
+    for (i = 0; i < 7; i++) {
+      cal.ctx.beginPath();
+      cal.ctx.moveTo(cal.leftMargin + cal.dayWidth*i, 0);
+      cal.ctx.lineTo(cal.leftMargin + cal.dayWidth*i, cal.height);
+      cal.ctx.closePath();
+      cal.ctx.stroke();
+    }
+    cal.ctx.beginPath();
+    cal.ctx.moveTo(0, cal.topMargin);
+    cal.ctx.lineTo(cal.width, cal.topMargin);
+    cal.ctx.closePath();
+    cal.ctx.stroke();
+    //cal.ctx.fillRect(0, 0, cal.width, cal.height);
   }
 }
 
@@ -412,7 +458,7 @@ function manageState(state) {
   if (state === "signup") signup.init();
   if (state === "addClass") addClass.init();
   if (state === "addEvent") addEvent.init();
-  if (state === "calendar") calendar.init();
+  if (state === "calendar") cal.init();
   if (state === "listings") listings.init();
 }
 
