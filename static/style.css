@@ -187,9 +187,7 @@ li {
 #calendarCanvas {
 	top: 118px;
 	left: 165px;
-	width: 933px;
-	height: 100%;
-	border:3px solid #000000;
+	border: 3px solid #000000;
 	position: absolute;
 	display: block;
 	margin: auto;
