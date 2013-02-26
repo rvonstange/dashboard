@@ -421,13 +421,15 @@ var addEvent = {
     newRow.append(startHour);
     newRow.append(startMinute);
     newRow.append(startAMPM);
+    var newRow2 = $("<tr>");
     var endMeeting = $("<td>");
     endMeeting.html("End Time:");
-    newRow.append(endMeeting);
-    newRow.append(endHour);
-    newRow.append(endMinute);
-    newRow.append(endAMPM);
+    newRow2.append(endMeeting);
+    newRow2.append(endHour);
+    newRow2.append(endMinute);
+    newRow2.append(endAMPM);
     eventTable.append(newRow);
+    eventTable.append(newRow2);
   },
 
   recurringEvent: function() {
@@ -472,7 +474,7 @@ var addEvent = {
     buttons.append('<input class="daysOfTheWeek" type="checkbox" value="wednesday" />W');
     buttons.append('<input class="daysOfTheWeek" type="checkbox" value="thursday" />Th');
     buttons.append('<input class="daysOfTheWeek" type="checkbox" value="friday" />F');
-    satButton.append('<input class="daysOfTheWeek" type="checkbox" value="saturday" />Sat');
+    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="saturday" />Sat');
     newRow.append(question);
     newRow.append(buttons);
     newRow.append(satButton);
@@ -510,12 +512,13 @@ var addEvent = {
         addEvent.createTimeChoice();
         addEvent.recurringEvent();
         $('#recurNo').change(function() {
-          $("#eventTable").find("tr:gt(5)").remove();
-          if ($('#recurNo').val() === "no") addEvent.createDays();
+          $("#eventTable").find("tr:gt(6)").remove();
+          if ($('#recurNo').val() === "no") console.log("recurNo has changed"); addEvent.createDays();
         });
         $('#recurYes').change(function() {
-          $("#eventTable").find("tr:gt(5)").remove();
-          if ($('#recurYes').val() === "yes") addEvent.createCalendarChoice();
+
+          $("#eventTable").find("tr:gt(6)").remove();
+          if ($('#recurYes').val() === "yes") console.log("recurYes has changed"); addEvent.createCalendarChoice();
         });
     }
     else if (name === "Lecture") {
@@ -571,17 +574,82 @@ var addEvent = {
     for (i = 0; i < database[userString].classes.length; i++) {
       if (database[userString].classes[i].name === myClassNameString) classIndex = i;
     }
-    if (name === "Activity" || name === "Office Hours") {
+    var priorityButtons = $(".priorityRadio");
+    var myPriority;
+    priorityButtons.each(function(i, item) {
+      if (item.checked === true) {
+        myPriority = item.value;
+      }
+    })
+      newEvent["priority"] = myPriority;
       var myEventName = $("#newEventName").val();
       newEvent["name"] = myEventName;
-      var priorityButtons = $(".priorityRadio");
-      var myPriority;
-      priorityButtons.each(function(i, item) {
+    if (name === "Activity" || name === "Office Hours") {
+      
+    
+      var oneTimeOrNot = $(".oneTime");
+      var myOneTime;
+      oneTimeOrNot.each(function(i, item) {
         if (item.checked === true) {
-          myPriority = item.value;
+          myOneTime = item.value;
         }
       })
-      newEvent["priority"] = myPriority;
+      if (myOneTime === "yes") {
+        newEvent["times"] = [getStartAndEndTimes()];
+        newEvent["recurringTimes"] = [];
+        //console.log("myYear, myMonth, myDay, myStartHour, myStartMin = ", myYear, myMonth, myDay, myStartHour, myStartMin);
+        //console.log("newEvent['times'] = ", newEvent["times"]);
+        //addEvent.addEventToServer(userString, myClassNameString, name, newEvent);
+        //database[userString].classes[classIndex].events[name].push(newEvent);
+      } else if (myOneTime === "no") {
+        //get start time
+        var myStartHour = Number(addEvent.getOptionVal($("#startHour"), "startHour"));
+        var myStartMin = Number(addEvent.getOptionVal($("#startMinute"), "startMinute"));
+        var myStartampm = addEvent.getOptionVal($("#startAMPM"), "startAMPM");
+        if (myStartampm === "PM") {
+          myStartHour += 12;
+          if (myStartHour === 24) myStartHour -= 12;
+        } if (myStartampm === "AM" && myStartHour === 12) myStartHour = 0;
+        //get end time
+        var myEndHour = Number(addEvent.getOptionVal($("#endHour"), "endHour"));
+        var myEndMin = Number(addEvent.getOptionVal($("#endMinute"), "endMinute"));
+        var myEndampm = addEvent.getOptionVal($("#endAMPM"), "endAMPM");
+        if (myEndampm === "PM") {
+          myEndHour += 12;
+        if (myEndHour === 24) myEndHour -= 12;
+      } if (myEndampm === "AM" && myEndHour === 12) myEndHour = 0;
+        var days = [];
+        var dayInputs = $(".daysOfTheWeek");
+        dayInputs.each(function(i, item) {
+          if (item.checked) days.push(item.value);
+        });
+        var thisDate = new Date();
+        newEvent["recurringTimes"] = [new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myStartHour, myStartMin),
+                                       new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myEndHour, myEndMin),
+                                       days];
+        newEvent["times"] = [];
+        console.log("days = ", days);
+        //addEvent.addEventToServer(userString, myClassNameString, name, newEvent);
+        //console.log(classIndex);
+        //database[userString].classes[classIndex].events[name].push(newEvent);
+      } else console.log("this should not happen");
+    } else if (name === "Homework") {
+      var dateString = $("#chooseDate").val();
+      var myYear = Number(dateString.slice(0,4));
+      var myMonth = Number(dateString.slice(5,7)) - 1;
+      var myDay = Number(dateString.slice(8,10));
+      var myHour = Number(addEvent.getOptionVal($("#Hour"), "Hour"));
+      var myMin = Number(addEvent.getOptionVal($("#Minute"), "Minute"));
+      var myampm = addEvent.getOptionVal($("#AMPM"), "AMPM");
+      if (myampm === "PM") {
+        myHour += 12;
+        if (myHour === 24) myHour -= 12;
+      } if (myampm === "AM" && myHour === 12) myHour = 0;
+      newEvent["due"] = new Date(myYear, myMonth, myDay, myHour, myMin);
+      
+    } else if (name === "Exam" || name === "Quiz") {
+      newEvent["time"] = getStartAndEndTimes();
+    } else if (name === "Lecture") {
       //get start time
       var myStartHour = Number(addEvent.getOptionVal($("#startHour"), "startHour"));
       var myStartMin = Number(addEvent.getOptionVal($("#startMinute"), "startMinute"));
@@ -598,46 +666,20 @@ var addEvent = {
         myEndHour += 12;
         if (myEndHour === 24) myEndHour -= 12;
       } if (myEndampm === "AM" && myEndHour === 12) myEndHour = 0;
-    
-      var oneTimeOrNot = $(".oneTime");
-      var myOneTime;
-      oneTimeOrNot.each(function(i, item) {
-        if (item.checked === true) {
-          myOneTime = item.value;
-        }
-      })
-      if (myOneTime === "yes") {
-        var dateString = $("#chooseDate").val();
-        var myYear = Number(dateString.slice(0,4));
-        var myMonth = Number(dateString.slice(5,7)) - 1;
-        var myDay = Number(dateString.slice(8,10));
-        newEvent["times"] = [[new Date(myYear, myMonth, myDay, myStartHour, myStartMin),
-                              new Date(myYear, myMonth, myDay, myEndHour, myEndMin)]];
-        newEvent["recurringTimes"] = [];
-        console.log("myYear, myMonth, myDay, myStartHour, myStartMin = ", myYear, myMonth, myDay, myStartHour, myStartMin);
-        console.log("newEvent['times'] = ", newEvent["times"]);
-        addEvent.addEventToServer(userString, myClassNameString, name, newEvent);
-        database[userString].classes[classIndex].events[name].push(newEvent);
-      } else if (myOneTime === "no") {
-        var days = [];
-        var dayInputs = $(".daysOfTheWeek");
-        dayInputs.each(function(i, item) {
-          if (item.checked) days.push(item.value);
-        });
-        var thisDate = new Date();
-        newEvent["recurringTimes"] = [[new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myStartHour, myStartMin),
-                                       new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myEndHour, myEndMin),
-                                       days]];
-        newEvent["times"] = [];
-        console.log("days = ", days);
-        addEvent.addEventToServer(userString, myClassNameString, name, newEvent);
-        console.log(classIndex);
-        database[userString].classes[classIndex].events[name].push(newEvent);
-      } else console.log("this should not happen");
+      var days = [];
+      var dayInputs = $(".daysOfTheWeek");
+      dayInputs.each(function(i, item) {
+        if (item.checked) days.push(item.value);
+      });
+      var thisDate = new Date();
+      newEvent["recurringTimes"] = [new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myStartHour, myStartMin),
+                                     new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myEndHour, myEndMin),
+                                     days];
     }
 
 
-
+    addEvent.addEventToServer(userString, myClassNameString, name, newEvent);
+    database[userString].classes[classIndex].events[name].push(newEvent);
     var user = $("#user-input");
     var className = $("#className-input");
     var eventName = $("#eventName-input");
@@ -659,6 +701,31 @@ var addEvent = {
 
     //var classIndex = database[userString].classes.indexOf(myClassNameString);
     //database[userString].classes[classIndex].events.push(newEvent);
+  },
+
+  getStartAndEndTimes: function() {
+    var dateString = $("#chooseDate").val();
+    var myYear = Number(dateString.slice(0,4));
+    var myMonth = Number(dateString.slice(5,7)) - 1;
+    var myDay = Number(dateString.slice(8,10));
+    //get start time
+    var myStartHour = Number(addEvent.getOptionVal($("#startHour"), "startHour"));
+    var myStartMin = Number(addEvent.getOptionVal($("#startMinute"), "startMinute"));
+    var myStartampm = addEvent.getOptionVal($("#startAMPM"), "startAMPM");
+    if (myStartampm === "PM") {
+      myStartHour += 12;
+      if (myStartHour === 24) myStartHour -= 12;
+    } if (myStartampm === "AM" && myStartHour === 12) myStartHour = 0;
+    //get end time
+    var myEndHour = Number(addEvent.getOptionVal($("#endHour"), "endHour"));
+    var myEndMin = Number(addEvent.getOptionVal($("#endMinute"), "endMinute"));
+    var myEndampm = addEvent.getOptionVal($("#endAMPM"), "endAMPM");
+    if (myEndampm === "PM") {
+      myEndHour += 12;
+      if (myEndHour === 24) myEndHour -= 12;
+    } if (myEndampm === "AM" && myEndHour === 12) myEndHour = 0;
+    return [new Date(myYear, myMonth, myDay, myStartHour, myStartMin),
+            new Date(myYear, myMonth, myDay, myEndHour, myEndMin)]
   },
 
   addEventToServer: function (user, thisClass, type, event) {
