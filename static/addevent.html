@@ -8,17 +8,18 @@
 </head>
 
 <body>
-	<div class="page"> 
+	<div class="page addevent"> 
 		<div id="bar">
 			<ul>
-				<h1 class="title">CAFtCoJ</h1>
+				<li><h1 class="title">CAFtCoJ</h1></li>
 				<li><button id="calendarBar">Calendar</button></li>
-				<li><button id="listingsBar">Cock</button></li>
+				<!-- <li><button id="listingsBar">Listings</button></li> -->
 				<li><button id="classBar">Add Class</button></li>
-				<li><button id="eventBar">Add Event</button></li>
+				<li id="current"><button id="eventBar">Add Event</button></li>
 			</ul>
 		</div>
-		<div class="inputs">
+
+		<div class="content">
 			<h2 class="title" id="addEvent_title">Add Event</h2>
 			<br>
 			<form id="addEventForm" action="javascript:addEvent.addEvent()">
