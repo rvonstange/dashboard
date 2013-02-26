@@ -136,28 +136,60 @@ var cal = {
     cal.hourHeight = 40;
     cal.fiftHeight = cal.hourHeight / 4;
     cal.drawGrid();
-    cal.drawDays();
     cal.drawDates();
   },
 
   drawDates: function() {
-    var dates = ["1", "2", "3", "4", "5", "6", "7"];
-    dates.forEach(function(element, i) {
+    var currentDate = new Date();
+    var tomorrow = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
+    var twoDays = new Date(currentDate.getTime() + 2 * 24 * 60 * 60 * 1000);
+    var threeDays  = new Date(currentDate.getTime() + 3 * 24 * 60 * 60 * 1000);
+    var fourDays  = new Date(currentDate.getTime() + 4 * 24 * 60 * 60 * 1000);
+    var fiveDays  = new Date(currentDate.getTime() + 5 * 24 * 60 * 60 * 1000);
+    var sixDays  = new Date(currentDate.getTime() + 6 * 24 * 60 * 60 * 1000);
+    var dates = [currentDate.getDate(), tomorrow.getDate(), twoDays.getDate(), 
+                threeDays.getDate(), fourDays.getDate(), fiveDays.getDate(), sixDays.getDate()];
+    var months = [currentDate.getMonth(), tomorrow.getMonth(), twoDays.getMonth(), 
+                threeDays.getMonth(), fourDays.getMonth(), fiveDays.getMonth(), sixDays.getMonth()];
+    for (var i = 0; i < months.length; i++){
+      if (months[i] === 0) months[i] = "Jan";
+      else if (months[i] === 1) months[i] = "Feb";
+      else if (months[i] === 2) months[i] = "March";
+      else if (months[i] === 3) months[i] = "April";
+      else if (months[i] === 4) months[i] = "May";
+      else if (months[i] === 5) months[i] = "June";
+      else if (months[i] === 6) months[i] = "July";
+      else if (months[i] === 7) months[i] = "Aug";
+      else if (months[i] === 8) months[i] = "Sep";
+      else if (months[i] === 9) months[i] = "Oct";
+      else if (months[i] === 10) months[i] = "Nov";
+      else if (months[i] === 11) months[i] = "Dec";
+    }
+    var dateAndMonth = [months[0] + " " + dates[0], months[1] + " " + dates[1], months[2] + " " + dates[2],
+    months[3] + " " + dates[3], months[4] + " " + dates[4], months[5] + " " + dates[5], months[6] + " " + dates[6]];
+    dateAndMonth.forEach(function(element, i) {
       cal.ctx.font = "bold 20px Times";
       cal.ctx.textAlign = "center";
       cal.ctx.fillText(element, cal.leftMargin + (cal.dayWidth / 2) + cal.dayWidth*i, (2/5)*cal.topMargin);
     })
-  },
-
-  drawDays: function () {
-    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
+    var days = [currentDate.getDay(), tomorrow.getDay(), twoDays.getDay(), 
+                threeDays.getDay(), fourDays.getDay(), fiveDays.getDay(), sixDays.getDay()];
+    var dayString;
     days.forEach(function(element, i) {
+      if (element === 0) dayString = "Sunday";
+      else if (element === 1) dayString = "Monday";
+      else if (element === 2) dayString = "Tuesday";
+      else if (element === 3) dayString = "Wednesday";
+      else if (element === 4) dayString = "Thursday";
+      else if (element === 5) dayString = "Friday";
+      else if (element === 6) dayString = "Saturday";
       cal.ctx.font = "15px Times";
       cal.ctx.textAlign = "center";
-      cal.ctx.fillText(element, cal.leftMargin + (cal.dayWidth / 2) + cal.dayWidth*i, (4/5)*cal.topMargin);
+      cal.ctx.fillText(dayString, cal.leftMargin + (cal.dayWidth / 2) + cal.dayWidth*i, (4/5)*cal.topMargin);
     })
   },
+
+
 
   drawGrid: function() {
     //draw verticle day lines
@@ -193,36 +225,38 @@ var cal = {
       cal.ctx.lineWidth = 0.2;
       cal.ctx.stroke();
     }
-    cal.firstBox = new cal.Box(new Date(2013, 2, 23, 8, 35), new Date(2013, 2, 23, 10, 35));
+    cal.firstBox = new cal.Box(new Date(2013, 2, 26, 8, 30), new Date(2013, 2, 26, 10, 30));
+    cal.secondBox = new cal.Box(new Date(2013, 2, 27, 4, 30), new Date(2013, 2, 27, 10, 30));
+
     cal.firstBox.draw();
+    cal.secondBox.draw();
+    //cal.ctx.fillRect(0,0,100,100);
   },
 
   Box: function(start, end) {
     this.start = start;
-    this.startHour = start.getHours;
-    this.startMinutes = start.getMinutes;
+    this.startHour = start.getHours();
+    this.startMinutes = start.getMinutes();
     this.startMinInt = this.startMinutes / 15;
     this.end = end;
-    this.endHour = end.getHours;
-    this.endMinutes = end.getMinutes;
+    this.endHour = end.getHours();
+    this.endMinutes = end.getMinutes();
     this.endMinInt = this.endMinutes / 15;
+    this.dayOfWeek = start.getDay();
+    this.currentDay = (new Date()).getDay();
+    this.drawVariable = (this.dayOfWeek - this.currentDay) % 7;
+
     this.draw = function() {
-      console.log("here");
-      var x = 1;
+      var x = cal.dayWidth*this.drawVariable +cal.leftMargin;
       var y = cal.topMargin + this.startHour*cal.hourHeight + this.startMinInt*cal.fiftHeight;
       var y1 = cal.topMargin + this.endHour*cal.hourHeight + this.endMinInt*cal.fiftHeight;
       var height = y1 - y;
-      var radius = 5;
+      var radius = 10;
       var width = cal.dayWidth;
-      roundedRect(cal.ctx, x, y, width, height, radius)
+      //cal.ctx.fillRect(x,y, width,height);
+      roundedRect(cal.ctx, x, y, width, height, radius);
     }
   }
-
-  // Box.prototype.draw: function() {
-    
-  // }
-  
-
 }
 
 var addEvent = {
