@@ -97,7 +97,7 @@ app.post("/database", function(request, response) {
   console.log("user = ", user, ", database[user] = ", database[user]);
   var newClass = {"category": request.body.category,
                   "name": request.body.name,
-                  "events": []};
+                  "events": {"Activity": [], "Office Hours": [], "Homework": [], "Exam": [], "Quiz": [], "Lecture": []}};
 
   var successful = 
       (newClass.category !== undefined) &&
@@ -122,6 +122,7 @@ app.post("/database/event", function(request, response) {
   var event = request.body.event;
   var user = request.body.user;
   var thisClass = request.body.class;
+  var type = request.body.type;
   // var newClass = {"category": request.body.category,
   //                 "name": request.body.name,
   //                 "events": {}};
@@ -129,7 +130,8 @@ app.post("/database/event", function(request, response) {
   var successful = 
       (event !== undefined) &&
       (user !== undefined) &&
-      (thisClass !== undefined);
+      (thisClass !== undefined) &&
+      (type !== undefined);
 
   var classIndex = -1;
   for (i = 0; i < database[user].classes.length; i++) {
@@ -137,7 +139,7 @@ app.post("/database/event", function(request, response) {
   }
   console.log(classIndex);
   if (successful) {
-    database[user].classes[classIndex].events.push(event);
+    database[user].classes[classIndex].events[type].push(event);
     writeFile("data.txt", JSON.stringify(database));
   } else {
     event = undefined;

@@ -341,7 +341,7 @@ var addEvent = {
     var endHour = $("<select>");
     startHour.attr("id", "startHour");
     endHour.attr("id", "endHour");
-    var hourOptions = [ ,1,2,3,4,5,6,7,8,9,10,11,12];
+    var hourOptions = [1,2,3,4,5,6,7,8,9,10,11,12];
     for (var i = 0; i < hourOptions.length; i++) {
         var newHourOption = $("<option>");
         newHourOption.html(hourOptions[i]);
@@ -354,7 +354,7 @@ var addEvent = {
     var endMinute = $("<select>");
     startMinute.attr("id", "startMinute");
     endMinute.attr("id", "endMinute");
-    var minuteOptions = [ ,"00","15","30","45"];
+    var minuteOptions = ["00","15","30","45"];
     for (var j = 0; j < minuteOptions.length; j++) {
         var newMinuteOption = $("<option>");
         newMinuteOption.html(minuteOptions[j]);
@@ -403,8 +403,8 @@ var addEvent = {
     question.html("One Time Event?");
     var buttons = $("<td>");
     buttons.attr("class","buttons");
-    buttons.append('<input type="radio" id="recurYes" name="recur" value="yes" />Yes');
-    buttons.append('<input type="radio" id="recurNo" name="recur" value="no" />No');
+    buttons.append('<input class="oneTime" type="radio" id="recurYes" name="recur" value="yes" />Yes');
+    buttons.append('<input class="oneTime" type="radio" id="recurNo" name="recur" value="no" />No');
     newRow.append(question);
     newRow.append(buttons);
     eventTable.append(newRow);
@@ -432,13 +432,13 @@ var addEvent = {
     var buttons = $("<td>");
     var satButton = $("<td>");
     buttons.attr("class","buttons");
-    buttons.append('<input type="checkbox" value="sunday" />Sun');
-    buttons.append('<input type="checkbox" value="monday" />M');
-    buttons.append('<input type="checkbox" value="tuesday" />T');
-    buttons.append('<input type="checkbox" value="wednesday" />W');
-    buttons.append('<input type="checkbox" value="thursday" />Th');
-    buttons.append('<input type="checkbox" value="friday" />F');
-    satButton.append('<input type="checkbox" value="saturday" />Sat');
+    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="sunday" />Sun');
+    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="monday" />M');
+    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="tuesday" />T');
+    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="wednesday" />W');
+    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="thursday" />Th');
+    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="friday" />F');
+    satButton.append('<input class="daysOfTheWeek" type="checkbox" value="saturday" />Sat');
     newRow.append(question);
     newRow.append(buttons);
     newRow.append(satButton);
@@ -453,7 +453,7 @@ var addEvent = {
     var question = $("<td>");
     question.html(message);
     var calendar = $("<td>");
-    calendar.append('<input type="date" name="dayOfEvent" />');
+    calendar.append('<input id="chooseDate" type="date" name="dayOfEvent" />');
     newRow.append(question);
     newRow.append(calendar);
     eventTable.append(newRow);
@@ -506,7 +506,104 @@ var addEvent = {
 
   },
 
+  getOptionVal: function(obj, id) {
+    var val;
+    for (var i = 0; i < obj[0].length; i++) {
+      if (obj[0][i].selected === true) {
+        val = $("select#" + id + " option:eq(" + i + ")").text();
+      }
+    }
+    console.log("val = ", val);
+    return val;
+  },
+
   addEvent: function() {
+    var myTypeOptions = $("#chooseEventType");
+    for (var i = 0; i < myTypeOptions[0].length; i++) {
+      if (myTypeOptions[0][i].selected === true) {
+        var name = $("select#chooseEventType option:eq(" + i + ")").text();
+      }
+    }
+    var newEvent = {};
+    newEvent["type"] = name;
+    var myClassNameSelector = $("#chooseClass");
+    for (var i = 0; i < myClassNameSelector[0].length; i++) {
+      if (myClassNameSelector[0][i].selected === true) {
+        var myClassNameString = $("select#chooseClass option:eq(" + i + ")").text();
+      }
+    }
+    console.log( "myClassNameString = ", myClassNameString);
+    var classIndex = -1;
+    for (i = 0; i < database[userString].classes.length; i++) {
+      if (database[userString].classes[i].name === myClassNameString) classIndex = i;
+    }
+    if (name === "Activity" || name === "Office Hours") {
+      var myEventName = $("#newEventName").val();
+      newEvent["name"] = myEventName;
+      var priorityButtons = $(".priorityRadio");
+      var myPriority;
+      priorityButtons.each(function(i, item) {
+        if (item.checked === true) {
+          myPriority = item.value;
+        }
+      })
+      newEvent["priority"] = myPriority;
+      //get start time
+      var myStartHour = Number(addEvent.getOptionVal($("#startHour"), "startHour"));
+      var myStartMin = Number(addEvent.getOptionVal($("#startMinute"), "startMinute"));
+      var myStartampm = addEvent.getOptionVal($("#startAMPM"), "startAMPM");
+      if (myStartampm === "PM") {
+        myStartHour += 12;
+        if (myStartHour === 24) myStartHour -= 12;
+      } if (myStartampm === "AM" && myStartHour === 12) myStartHour = 0;
+      //get end time
+      var myEndHour = Number(addEvent.getOptionVal($("#endHour"), "endHour"));
+      var myEndMin = Number(addEvent.getOptionVal($("#endMinute"), "endMinute"));
+      var myEndampm = addEvent.getOptionVal($("#endAMPM"), "endAMPM");
+      if (myEndampm === "PM") {
+        myEndHour += 12;
+        if (myEndHour === 24) myEndHour -= 12;
+      } if (myEndampm === "AM" && myEndHour === 12) myEndHour = 0;
+    
+      var oneTimeOrNot = $(".oneTime");
+      var myOneTime;
+      oneTimeOrNot.each(function(i, item) {
+        if (item.checked === true) {
+          myOneTime = item.value;
+        }
+      })
+      if (myOneTime === "yes") {
+        var dateString = $("#chooseDate").val();
+        var myYear = Number(dateString.slice(0,4));
+        var myMonth = Number(dateString.slice(5,7)) - 1;
+        var myDay = Number(dateString.slice(8,10));
+        newEvent["times"] = [[new Date(myYear, myMonth, myDay, myStartHour, myStartMin),
+                              new Date(myYear, myMonth, myDay, myEndHour, myEndMin)]];
+        newEvent["recurringTimes"] = [];
+        console.log("myYear, myMonth, myDay, myStartHour, myStartMin = ", myYear, myMonth, myDay, myStartHour, myStartMin);
+        console.log("newEvent['times'] = ", newEvent["times"]);
+        addEvent.addEventToServer(userString, myClassNameString, name, newEvent);
+        database[userString].classes[classIndex].events[name].push(newEvent);
+      } else if (myOneTime === "no") {
+        var days = [];
+        var dayInputs = $(".daysOfTheWeek");
+        dayInputs.each(function(i, item) {
+          if (item.checked) days.push(item.value);
+        });
+        var thisDate = new Date();
+        newEvent["recurringTimes"] = [[new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myStartHour, myStartMin),
+                                       new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myEndHour, myEndMin),
+                                       days]];
+        newEvent["times"] = [];
+        console.log("days = ", days);
+        addEvent.addEventToServer(userString, myClassNameString, name, newEvent);
+        console.log(classIndex);
+        database[userString].classes[classIndex].events[name].push(newEvent);
+      } else console.log("this should not happen");
+    }
+
+
+
     var user = $("#user-input");
     var className = $("#className-input");
     var eventName = $("#eventName-input");
@@ -524,16 +621,16 @@ var addEvent = {
                     "due": due,
                     "priority": priority,
                     "workTime": workTime };
-    addEventToServer(user.val(), className.val(), newEvent);
+    //addEvent.addEventToServer(userString, myClassNameString, newEvent);
 
-    var classIndex = database.user.val().classes.indexOf(className.val());
-    database.user.val().classes[classIndex].events.push(newEvent);
+    //var classIndex = database[userString].classes.indexOf(myClassNameString);
+    //database[userString].classes[classIndex].events.push(newEvent);
   },
 
-  addEventToServer: function (user, thisClass, event) {
+  addEventToServer: function (user, thisClass, type, event) {
     $.ajax({
       type: "post",
-      data: {"user": user, "class": thisClass, "event": event},
+      data: {"user": user, "class": thisClass, "type": type, "event": event},
       url: "/database/event",
       success: function(data) {
         //blah
@@ -561,7 +658,7 @@ var addClass = {
 
     var newClass = {"category": category.value,
                     "name": className.val(),
-                    "events": []};
+                    "events": {"Activity": [], "Office Hours": [], "Homework": [], "Exam": [], "Quiz": [], "Lecture": []}};
     if (database[user].classes === undefined) database[user].classes = [];
     database[user].classes.push(newClass);
     className.val("");
