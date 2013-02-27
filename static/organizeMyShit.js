@@ -155,6 +155,7 @@ var cal = {
     cal.drawOneTimeEvents();
     //cal.drawRecurringEvents("Activity");
     //cal.drawRecurringEvents("Office Hours");
+    cal.drawLectures();
     cal.canvas.addEventListener("mousedown", cal.mousePressed, false);
       },
 
@@ -396,7 +397,120 @@ var cal = {
           }
       }
   }
-}
+},
+  drawRecurringEvents: function(eventType) {
+    var dayIndex;
+        var currentDate = new Date(cal.currentDate.getFullYear(), cal.currentDate.getMonth(), 
+                               cal.currentDate.getDate());
+    var calendarLimitDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    for (var i = 0; i < database[userString].classes.length; i++) {
+      for (var j = 0; j < database[userString].classes[i].events[eventType].length; j++) {
+        if (database[userString].classes[i].events[eventType][j]["times"] === undefined) {  
+          var class_org = database[userString].classes[i]["name"];
+          var priority = database[userString].classes[i].events[eventType][j]["priority"];
+          var start = (new Date(String(database[userString].classes[i].events[eventType][j]["recurringTimes"][0])));
+          var end = (new Date(String(database[userString].classes[i].events[eventType][j]["recurringTimes"][1])));
+          for (var k = 0; k < database[userString].classes[i].events[eventType][j]["recurringTimes"][2].length; k++){
+            var startHour = start.getHours();
+            var endHour = end.getHours();
+            var startMinutes = start.getMinutes();
+            var endMinutes = end.getMinutes();
+            var day = database[userString].classes[i].events[eventType][j]["recurringTimes"][2][k];
+            if (day === "sunday") dayIndex = 0;
+            else if (day === "monday") dayIndex = 1;
+            else if (day === "tuesday") dayIndex = 2;
+            else if (day === "wednesday") dayIndex = 3;
+            else if (day === "thursday") dayIndex = 4;
+            else if (day === "friday") dayIndex = 5;
+            else if (day === "saturday") dayIndex = 6;
+            while (true){
+              cal.tempBox = new cal.Box(start, end, class_org, eventType, priority, dayIndex);               
+              if ((start >= currentDate) && (start < calendarLimitDate)) {
+                cal.tempBox.draw();
+                break;
+              }
+              else {
+                var start = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
+                var end = new Date(end.getTime() + 7 * 24 * 60 * 60 * 1000);              
+              }
+              
+            }
+        }
+        }
+      }
+  }
+  },
+
+  drawLectures: function (){
+    var dayIndex;
+        var currentDate = new Date(cal.currentDate.getFullYear(), cal.currentDate.getMonth(), 
+                               cal.currentDate.getDate());
+    var calendarLimitDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    for (var i = 0; i < database[userString].classes.length; i++) {
+      for (var j = 0; j < database[userString].classes[i].events["Lecture"].length; j++) {
+        if (database[userString].classes[i].events["Lecture"][j]["times"] === undefined) {  
+          var class_org = database[userString].classes[i]["name"];
+          var priority = database[userString].classes[i].events["Lecture"][j]["priority"];
+          var start = (new Date(String(database[userString].classes[i].events["Lecture"][j]["lectureTimes"][0])));
+          var end = (new Date(String(database[userString].classes[i].events["Lecture"][j]["lectureTimes"][1])));
+          for (var k = 0; k < database[userString].classes[i].events["Lecture"][j]["lectureTimes"][2].length; k++){
+            var startHour = start.getHours();
+            var endHour = end.getHours();
+            var startMinutes = start.getMinutes();
+            var endMinutes = end.getMinutes();
+            var day = database[userString].classes[i].events["Lecture"][j]["lectureTimes"][2][k];
+            if (day === "sunday") dayIndex = 0;
+            else if (day === "monday") dayIndex = 1;
+            else if (day === "tuesday") dayIndex = 2;
+            else if (day === "wednesday") dayIndex = 3;
+            else if (day === "thursday") dayIndex = 4;
+            else if (day === "friday") dayIndex = 5;
+            else if (day === "saturday") dayIndex = 6;
+            while (true){
+              cal.tempBox = new cal.Box(start, end, class_org, "Lecture", priority, dayIndex);               
+              if ((start >= currentDate) && (start < calendarLimitDate)) {
+                cal.tempBox.draw();
+                break;
+              }
+              else {
+                var start = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
+                var end = new Date(end.getTime() + 7 * 24 * 60 * 60 * 1000);              
+              }
+              
+            }
+        }
+        }
+        if (database[userString].classes[i].events["Lecture"][j]["recitationTimes"] !== undefined){
+          for (var k = 0; k < database[userString].classes[i].events["Lecture"][j]["recitationTimes"][2].length; k++){
+              var startHour = start.getHours();
+              var endHour = end.getHours();
+              var startMinutes = start.getMinutes();
+              var endMinutes = end.getMinutes();
+              var day = database[userString].classes[i].events["Lecture"][j]["recitationTimes"][2][k];
+              if (day === "sunday") dayIndex = 0;
+              else if (day === "monday") dayIndex = 1;
+              else if (day === "tuesday") dayIndex = 2;
+              else if (day === "wednesday") dayIndex = 3;
+              else if (day === "thursday") dayIndex = 4;
+              else if (day === "friday") dayIndex = 5;
+              else if (day === "saturday") dayIndex = 6;
+              while (true){
+                cal.tempBox = new cal.Box(start, end, class_org, "Recitation", priority, dayIndex);               
+                if ((start >= currentDate) && (start < calendarLimitDate)) {
+                  cal.tempBox.draw();
+                  break;
+                }
+                else {
+                  var start = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
+                  var end = new Date(end.getTime() + 7 * 24 * 60 * 60 * 1000);              
+                }
+                
+              }
+          }
+        }
+      }
+      }
+    }
 }
 
 var addEvent = {
