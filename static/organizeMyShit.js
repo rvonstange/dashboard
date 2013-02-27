@@ -16,11 +16,11 @@ function manageBar() {
   console.log(hello);
   addClasses.click(function(){
     console.log("i come here!");
-    window.location.href = 'addClass.html#' + encodeURI(userString);
+    window.location.href = 'addclass.html#' + encodeURI(userString);
   });
   var addEvents = $("#eventBar");
   addEvents.click(function(){
-    window.location.href = 'addEvent.html#' + encodeURI(userString);
+    window.location.href = 'addevent.html#' + encodeURI(userString);
   });
   var logout = $("#logoutBar");
   logout.click(function(){
@@ -1274,7 +1274,7 @@ function getEventIndex(user, classIndex, eventName) {
 
 function checkLocation() {
   var pathname = window.location.pathname;
-  var pages = ["index", "signup", "addClass", "addEvent", "calendar", "listings"];
+  var pages = ["index", "signup", "addclass", "addevent", "calendar", "listings"];
   var currentState = undefined;
   for (i = 0; i < pages.length; i++) {
     if (pathname.indexOf(pages[i]) !== -1) {
@@ -1287,8 +1287,8 @@ function checkLocation() {
 function manageState(state) {
   if (state === "index") index.init();
   if (state === "signup") signup.init();
-  if (state === "addClass") addClass.init();
-  if (state === "addEvent") addEvent.init();
+  if (state === "addclass") addClass.init();
+  if (state === "addevent") addEvent.init();
   if (state === "calendar") cal.init();
   if (state === "listings") listings.init();
 }
