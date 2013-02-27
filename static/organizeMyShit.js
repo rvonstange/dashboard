@@ -103,7 +103,7 @@ var signup = {
     data: {"user": user, "data": data},
     url: "/database/newUser",
     success: function(data) { 
-      window.location.href = 'calendar.html#' + encodeURI(user);
+      window.location.href = 'addclass.html#' + encodeURI(user);
     }
   });
   },
@@ -131,10 +131,12 @@ var cal = {
     console.log("im in cal.init")
     manageBar();
     cal.canvas = $("#calendarCanvas")[0];
+    cal.jqueryCanvas = $("#calendarCanvas");
     cal.ctx = cal.canvas.getContext("2d");
     console.log("canvas = ", cal.canvas, ", ctx = ", cal.ctx);
     cal.width = cal.canvas.width;
     cal.height = cal.canvas.height;
+    cal.drawnBoxes = [];
     cal.leftMargin = 48;
     cal.topMargin = 70;
     cal.dayWidth = (cal.width - cal.leftMargin) / 7;
@@ -147,12 +149,24 @@ var cal = {
                        "Quiz": "rgba(255, 0, 255, .5)",
                        "Lecture": "rgba(0, 255, 0, .5)"}
     cal.currentDate = new Date();
-    cal.currentDate = new Date(cal.currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    //cal.currentDate = new Date(cal.currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
     cal.drawGrid();
     cal.drawDates();
     cal.drawOneTimeEvents();
-    cal.drawRecurringEvents("Activity");
-    cal.drawRecurringEvents("Office Hours");
+    //cal.drawRecurringEvents("Activity");
+    //cal.drawRecurringEvents("Office Hours");
+    cal.canvas.addEventListener("mousedown", cal.mousePressed, false);
+      },
+
+  mousePressed: function(event) {
+    var offset = cal.jqueryCanvas.offset();
+    var x = event.pageX - offset.left;
+    var y = event.pageY - offset.top;
+    for (var i = 0; i < cal.drawnBoxes.length; i++) {
+      //console.log(cal.drawnBoxes[i]);
+      if (cal.drawnBoxes[i].inBox(x, y));
+    }
+
   },
 
   drawDates: function() {
@@ -249,12 +263,13 @@ var cal = {
     //cal.ctx.fillRect(0,0,100,100);
   },
 
-  Box: function(start, end, class_org, eventType, priority, dayIndex) {
+  Box: function(start, end, class_org, eventType, priority, dayIndex, eventName) {
     this.start = start;
     this.startHour = start.getHours();
     this.startMinutes = start.getMinutes();
     this.startMinInt = this.startMinutes / 15;
     this.end = end;
+    this.eventName = eventName;
     this.class_org = class_org;
     this.eventType = eventType;
     this.priority = priority;
@@ -283,39 +298,45 @@ var cal = {
 
     //cal.ctx.addEventListener('mousedown', this.click, false);
     this.draw = function() {
-      var x = cal.dayWidth*this.drawVariable +cal.leftMargin;
-      var y = cal.topMargin + this.startHour*cal.hourHeight + this.startMinInt*cal.fiftHeight;
-      var y1 = cal.topMargin + this.endHour*cal.hourHeight + this.endMinInt*cal.fiftHeight;
-      var height = y1 - y;
-      var radius = 10;
-      var width = cal.dayWidth;
-      roundedRect(cal.ctx, x, y, width, height, radius, this.colorOfBox, this.alpha);
-      if (height > cal.fiftHeight){
+      this.x = cal.dayWidth*this.drawVariable +cal.leftMargin;
+      this.y = cal.topMargin + this.startHour*cal.hourHeight + this.startMinInt*cal.fiftHeight;
+      this.y1 = cal.topMargin + this.endHour*cal.hourHeight + this.endMinInt*cal.fiftHeight;
+      this.height = this.y1 - this.y;
+      this.radius = 10;
+      this.width = cal.dayWidth;
+      roundedRect(cal.ctx, this.x, this.y, this.width, this.height, this.radius, this.colorOfBox, this.alpha);
+      if (this.height > cal.fiftHeight){
       cal.ctx.font = "15px Arial Black";
       cal.ctx.fillStyle = this.textColor;
-      cal.ctx.fillText(this.class_org, x+width/2, y+height/2 +5);
+      cal.ctx.fillText(this.class_org, this.x+this.width/2, this.y+this.height/2 +5);
       }
       
     }
-    this.click = function() {
-
+    this.inBox = function(x, y) {
+      if (x >= this.x && y >= this.y && x <= this.x+this.width && y <= this.y+this.height) {
+        return true;
+      }
+      else return false;
+      //console.log(this.x, this.y, this.x+this.width, this.y+this.height, x, y);
 
     }
   },
 
   drawOneTimeEvents: function() {
-    var currentDate = cal.currentDate;
+    var currentDate = new Date(cal.currentDate.getFullYear(), cal.currentDate.getMonth(), cal.currentDate.getDate());
     var calendarLimitDate = new Date(currentDate.getTime() + 6 * 24 * 60 * 60 * 1000);
     for (var i = 0; i < database[userString].classes.length; i++) {
       for (var j = 0; j < database[userString].classes[i].events["Activity"].length; j++) {
         if (database[userString].classes[i].events["Activity"][j]["recurringTimes"] === undefined) {   
           var class_org = database[userString].classes[i]["name"];
           var priority = database[userString].classes[i].events["Activity"][j]["priority"];
+          var name = database[userString].classes[i].events["Activity"][j]["name"];
           var start = (new Date(String(database[userString].classes[i].events["Activity"][j]["times"][0])));
           var end = (new Date(String(database[userString].classes[i].events["Activity"][j]["times"][1])));
           cal.tempBox = new cal.Box(start, end, class_org, "Activity", priority);               
-          if ((start >= currentDate) && (start <= calendarLimitDate)) {
+          if ((start >= currentDate) && (start < calendarLimitDate)) {
             cal.tempBox.draw();
+            cal.drawnBoxes.push(cal.tempBox);
           }
         }
       }
@@ -323,42 +344,50 @@ var cal = {
         if (database[userString].classes[i].events["Office Hours"][j]["recurringTimes"] === undefined) {   
           var class_org = database[userString].classes[i]["name"];
           var priority = database[userString].classes[i].events["Office Hours"][j]["priority"];
+          var name = database[userString].classes[i].events["Office Hours"][j]["name"];
           var start = (new Date(String(database[userString].classes[i].events["Office Hours"][j]["times"][0])));
           var end = (new Date(String(database[userString].classes[i].events["Office Hours"][j]["times"][1])));
           cal.tempBox = new cal.Box(start, end, class_org, "Office Hours", priority);               
-          if ((start >= currentDate) && (start <= calendarLimitDate)) {
+          if ((start >= currentDate) && (start < calendarLimitDate)) {
             cal.tempBox.draw();
+            cal.drawnBoxes.push(cal.tempBox);
           }
         }
       }
       for (var j = 0; j < database[userString].classes[i].events["Exam"].length; j++) {
           var class_org = database[userString].classes[i]["name"];
           var priority = database[userString].classes[i].events["Exam"][j]["priority"];
+          var name = database[userString].classes[i].events["Exam"][j]["name"];
           var start = (new Date(String(database[userString].classes[i].events["Exam"][j]["time"][0])));
           var end = (new Date(String(database[userString].classes[i].events["Exam"][j]["time"][1])));
           cal.tempBox = new cal.Box(start, end, class_org, "Exam", priority);               
-          if ((start >= currentDate) && (start <= calendarLimitDate)) {
+          if ((start >= currentDate) && (start < calendarLimitDate)) {
             cal.tempBox.draw();
+            cal.drawnBoxes.push(cal.tempBox);
           }
       }
       for (var j = 0; j < database[userString].classes[i].events["Quiz"].length; j++) {
           var class_org = database[userString].classes[i]["name"];
           var priority = database[userString].classes[i].events["Quiz"][j]["priority"];
+          var name = database[userString].classes[i].events["Quiz"][j]["name"];
           var start = (new Date(String(database[userString].classes[i].events["Quiz"][j]["time"][0])));
           var end = (new Date(String(database[userString].classes[i].events["Quiz"][j]["time"][1])));
           cal.tempBox = new cal.Box(start, end, class_org, "Quiz", priority);               
-          if ((start >= currentDate) && (start <= calendarLimitDate)) {
+          if ((start >= currentDate) && (start < calendarLimitDate)) {
             cal.tempBox.draw();
+            cal.drawnBoxes.push(cal.tempBox);
           }
       }
       for (var j = 0; j < database[userString].classes[i].events["Homework"].length; j++) {
           var class_org = database[userString].classes[i]["name"];
           var priority = database[userString].classes[i].events["Homework"][j]["priority"];
+          var name = database[userString].classes[i].events["Homework"][j]["name"];
           var start = (new Date(String(database[userString].classes[i].events["Homework"][j]["due"])));
           var endBlock = new Date(start.getTime() + .5 * 60 * 60 * 1000);          
           cal.tempBox = new cal.Box(start, endBlock, class_org, "Homework", priority);               
-          if ((start >= currentDate) && (start <= calendarLimitDate)) {
+          if ((start >= currentDate) && (start < calendarLimitDate)) {
             cal.tempBox.draw();
+            cal.drawnBoxes.push(cal.tempBox);
           }
       }
   }
@@ -897,7 +926,7 @@ var addClass = {
     var successful = {"Type": category !== undefined, "Name": className.val() !== undefined && 
     !addClass.nameInDatabase(className.val()) && className.val() !== ""};
     var addClassAlert = $("#addClassAlert");
-    console.log("truth value", database[user].classes["Bhangra"]);
+    //console.log("truth value", database[user].classes["Bhangra"]);
     for (key in successful) {
       if (successful[key] === false) {
         current += " " + key + ";";
@@ -923,6 +952,9 @@ var addClass = {
   },
 
   nameInDatabase: function(name) {
+    if (database[userString].classes === undefined) {
+      return false;
+    }
     for (i = 0; i < database[userString].classes.length; i++) {
       if (database[userString].classes[i].name === name) return true;
     }
