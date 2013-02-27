@@ -147,7 +147,8 @@ var cal = {
                        "Homework": "rgba(0, 0, 0, .75)",
                        "Exam": "rgba(71, 255, 255, .5)",
                        "Quiz": "rgba(255, 0, 255, .5)",
-                       "Lecture": "rgba(0, 255, 0, .5)"}
+                       "Lecture": "rgba(0, 255, 0, .5)",
+                      "Recitation": "rgba(0,100,0,.5)"}
     cal.currentDate = new Date();
     //cal.currentDate = new Date(cal.currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
     cal.drawGrid();
@@ -301,6 +302,7 @@ var cal = {
     if (this.eventType === "Exam") this.colorOfBox = cal.eventColors["Exam"];
     if (this.eventType === "Quiz") this.colorOfBox = cal.eventColors["Quiz"];
     if (this.eventType === "Lecture") this.colorOfBox = cal.eventColors["Lecture"];
+    if (this.eventType === "Recitation") this.colorOfBox = cal.eventColors["Recitation"];
 
     //cal.ctx.addEventListener('mousedown', this.click, false);
     this.draw = function() {
@@ -448,39 +450,39 @@ var cal = {
     var calendarLimitDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
     for (var i = 0; i < database[userString].classes.length; i++) {
       for (var j = 0; j < database[userString].classes[i].events["Lecture"].length; j++) {
-        if (database[userString].classes[i].events["Lecture"][j]["times"] === undefined) {  
-          var class_org = database[userString].classes[i]["name"];
-          var priority = database[userString].classes[i].events["Lecture"][j]["priority"];
-          var start = (new Date(String(database[userString].classes[i].events["Lecture"][j]["lectureTimes"][0])));
-          var end = (new Date(String(database[userString].classes[i].events["Lecture"][j]["lectureTimes"][1])));
-          for (var k = 0; k < database[userString].classes[i].events["Lecture"][j]["lectureTimes"][2].length; k++){
-            var startHour = start.getHours();
-            var endHour = end.getHours();
-            var startMinutes = start.getMinutes();
-            var endMinutes = end.getMinutes();
-            var day = database[userString].classes[i].events["Lecture"][j]["lectureTimes"][2][k];
-            if (day === "sunday") dayIndex = 0;
-            else if (day === "monday") dayIndex = 1;
-            else if (day === "tuesday") dayIndex = 2;
-            else if (day === "wednesday") dayIndex = 3;
-            else if (day === "thursday") dayIndex = 4;
-            else if (day === "friday") dayIndex = 5;
-            else if (day === "saturday") dayIndex = 6;
-            while (true){
-              cal.tempBox = new cal.Box(start, end, class_org, "Lecture", priority, dayIndex);               
-              if ((start >= currentDate) && (start < calendarLimitDate)) {
-                cal.tempBox.draw();
-                break;
-              }
-              else {
-                var start = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
-                var end = new Date(end.getTime() + 7 * 24 * 60 * 60 * 1000);              
-              }
-              
+        var class_org = database[userString].classes[i]["name"];
+        var priority = database[userString].classes[i].events["Lecture"][j]["priority"];
+        var start = (new Date(String(database[userString].classes[i].events["Lecture"][j]["lectureTimes"][0])));
+        var end = (new Date(String(database[userString].classes[i].events["Lecture"][j]["lectureTimes"][1])));
+        for (var k = 0; k < database[userString].classes[i].events["Lecture"][j]["lectureTimes"][2].length; k++){
+          var startHour = start.getHours();
+          var endHour = end.getHours();
+          var startMinutes = start.getMinutes();
+          var endMinutes = end.getMinutes();
+          var day = database[userString].classes[i].events["Lecture"][j]["lectureTimes"][2][k];
+          if (day === "sunday") dayIndex = 0;
+          else if (day === "monday") dayIndex = 1;
+          else if (day === "tuesday") dayIndex = 2;
+          else if (day === "wednesday") dayIndex = 3;
+          else if (day === "thursday") dayIndex = 4;
+          else if (day === "friday") dayIndex = 5;
+          else if (day === "saturday") dayIndex = 6;
+          while (true){
+            cal.tempBox = new cal.Box(start, end, class_org, "Lecture", priority, dayIndex);               
+            if ((start >= currentDate) && (start < calendarLimitDate)) {
+              cal.tempBox.draw();
+              break;
             }
-        }
+            else {
+              var start = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
+              var end = new Date(end.getTime() + 7 * 24 * 60 * 60 * 1000);              
+            }
+            
+          }
         }
         if (database[userString].classes[i].events["Lecture"][j]["recitationTimes"] !== undefined){
+          var start = (new Date(String(database[userString].classes[i].events["Lecture"][j]["recitationTimes"][0])));
+          var end = (new Date(String(database[userString].classes[i].events["Lecture"][j]["recitationTimes"][1])));
           for (var k = 0; k < database[userString].classes[i].events["Lecture"][j]["recitationTimes"][2].length; k++){
               var startHour = start.getHours();
               var endHour = end.getHours();
