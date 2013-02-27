@@ -7,7 +7,8 @@ get calendar canvas working.
 Get dates and times to be input correctly
 Develop calendar functionality: click on event and information shows up.
 Create My Classes sidebar for calendar.
-
+Add Logout button to top bar. Takes you to login page. 
+popups appear when you add class and event.
 
 
 

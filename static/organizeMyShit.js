@@ -316,14 +316,6 @@ var addEvent = {
         addEvent.refreshAddEvent();
       });
 
-//This is used to change the page based on the type of event chosen
-      // for (var k = 0; k < myTypeOptions[0].length; k++) {
-      // if (myTypeOptions[0][k].selected === true) {
-      //   var eventToAdd = myTypeOptions[0][k].html;
-      //   console.log(myTypeOptions[0][k]);
-
-      // }
-    //}
       $('#chooseEventType').change(function() {
         addEvent.refreshLowerEventPage();
       });
@@ -370,11 +362,13 @@ var addEvent = {
     eventTable.append(newRow);
   },
 
-  createTimeChoice: function() {
+  createTimeChoice: function(rec) {
     var startHour = $("<select>");
     var endHour = $("<select>");
-    startHour.attr("id", "startHour");
-    endHour.attr("id", "endHour");
+    if (!rec) startHour.attr("id", "startHour");
+    else startHour.attr("id", "startHourRec");
+    if (!rec) endHour.attr("id", "endHour");
+    else endHour.attr("id", "endHourRec");
     var hourOptions = [1,2,3,4,5,6,7,8,9,10,11,12];
     for (var i = 0; i < hourOptions.length; i++) {
         var newHourOption = $("<option>");
@@ -386,8 +380,10 @@ var addEvent = {
     }   
     var startMinute = $("<select>");
     var endMinute = $("<select>");
-    startMinute.attr("id", "startMinute");
-    endMinute.attr("id", "endMinute");
+    if (!rec) startMinute.attr("id", "startMinute");
+    else startMinute.attr("id", "startMinuteRec");
+    if (!rec) endMinute.attr("id", "endMinute");
+    else endMinute.attr("id", "endMinuteRec");
     var minuteOptions = ["00","15","30","45"];
     for (var j = 0; j < minuteOptions.length; j++) {
         var newMinuteOption = $("<option>");
@@ -400,8 +396,10 @@ var addEvent = {
 
     var startAMPM = $("<select>");
     var endAMPM = $("<select>");
-    startAMPM.attr("id", "startAMPM");
-    endAMPM.attr("id", "endAMPM");
+    if (!rec) startAMPM.attr("id", "startAMPM");
+    else startAMPM.attr("id", "startAMPMRec");
+    if (!rec) endAMPM.attr("id", "endAMPM");
+    else endAMPM.attr("id", "endAMPMRec");
     var ampmOptions = ["AM","PM"];
     for (var k = 0; k < ampmOptions.length; k++) {
         var newAMPMOption = $("<option>");
@@ -414,7 +412,8 @@ var addEvent = {
     
     var eventTable = $('#eventTable');
     var newRow = $("<tr>");
-    newRow.attr("id", "meetingTimes");
+    if (!rec) newRow.attr("id", "meetingTimes");
+    else newRow.attr("id", "meetingTimesRec");
     var startMeeting = $("<td>");
     startMeeting.html("Start Time:");
     newRow.append(startMeeting);
@@ -460,21 +459,33 @@ var addEvent = {
     eventTable.append(newRow);
   },
 
-  createDays: function () {
+  createDays: function (rec) {
     var eventTable = $('#eventTable');
     var newRow = $("<tr>");
     var question = $("<td>");
     question.html("Choose Days: ");
     var buttons = $("<td>");
     var satButton = $("<td>");
-    buttons.attr("class","buttons");
-    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="sunday" />Sun');
-    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="monday" />M');
-    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="tuesday" />T');
-    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="wednesday" />W');
-    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="thursday" />Th');
-    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="friday" />F');
-    buttons.append('<input class="daysOfTheWeek" type="checkbox" value="saturday" />Sat');
+    if (!rec) buttons.attr("class","buttons");
+    else buttons.attr("class", "buttonsRec");
+    if (!rec) {
+      buttons.append('<input class="daysOfTheWeek" type="checkbox" value="sunday" />Sun');
+      buttons.append('<input class="daysOfTheWeek" type="checkbox" value="monday" />M');
+      buttons.append('<input class="daysOfTheWeek" type="checkbox" value="tuesday" />T');
+      buttons.append('<input class="daysOfTheWeek" type="checkbox" value="wednesday" />W');
+      buttons.append('<input class="daysOfTheWeek" type="checkbox" value="thursday" />Th');
+      buttons.append('<input class="daysOfTheWeek" type="checkbox" value="friday" />F');
+      buttons.append('<input class="daysOfTheWeek" type="checkbox" value="saturday" />Sat');
+    } else {
+      buttons.append('<input class="daysOfTheWeekRec" type="checkbox" value="sunday" />Sun');
+      buttons.append('<input class="daysOfTheWeekRec" type="checkbox" value="monday" />M');
+      buttons.append('<input class="daysOfTheWeekRec" type="checkbox" value="tuesday" />T');
+      buttons.append('<input class="daysOfTheWeekRec" type="checkbox" value="wednesday" />W');
+      buttons.append('<input class="daysOfTheWeekRec" type="checkbox" value="thursday" />Th');
+      buttons.append('<input class="daysOfTheWeekRec" type="checkbox" value="friday" />F');
+      buttons.append('<input class="daysOfTheWeekRec" type="checkbox" value="saturday" />Sat');
+    }
+    
     newRow.append(question);
     newRow.append(buttons);
     newRow.append(satButton);
@@ -526,13 +537,13 @@ var addEvent = {
       addEvent.createDays();
       addEvent.recitation();
       $('#recitationNo').change(function() {
-          $("#eventTable").find("tr:gt(6)").remove();
+          $("#eventTable").find("tr:gt(7)").remove();
           });
       $('#recitationYes').change(function() {
-          $("#eventTable").find("tr:gt(6)").remove();
+          $("#eventTable").find("tr:gt(7)").remove();
           if ($('#recitationYes').val() === "yes") {
-            addEvent.createTimeChoice();
-            addEvent.createDays();
+            addEvent.createTimeChoice(true);
+            addEvent.createDays(true);
           }
         });
     }
@@ -595,12 +606,8 @@ var addEvent = {
         }
       })
       if (myOneTime === "yes") {
-        newEvent["times"] = [getStartAndEndTimes()];
+        newEvent["times"] = addEvent.getStartAndEndTimes();
         newEvent["recurringTimes"] = [];
-        //console.log("myYear, myMonth, myDay, myStartHour, myStartMin = ", myYear, myMonth, myDay, myStartHour, myStartMin);
-        //console.log("newEvent['times'] = ", newEvent["times"]);
-        //addEvent.addEventToServer(userString, myClassNameString, name, newEvent);
-        //database[userString].classes[classIndex].events[name].push(newEvent);
       } else if (myOneTime === "no") {
         //get start time
         var myStartHour = Number(addEvent.getOptionVal($("#startHour"), "startHour"));
@@ -629,9 +636,7 @@ var addEvent = {
                                        days];
         newEvent["times"] = [];
         console.log("days = ", days);
-        //addEvent.addEventToServer(userString, myClassNameString, name, newEvent);
-        //console.log(classIndex);
-        //database[userString].classes[classIndex].events[name].push(newEvent);
+
       } else console.log("this should not happen");
     } else if (name === "Homework") {
       var dateString = $("#chooseDate").val();
@@ -648,7 +653,7 @@ var addEvent = {
       newEvent["due"] = new Date(myYear, myMonth, myDay, myHour, myMin);
       
     } else if (name === "Exam" || name === "Quiz") {
-      newEvent["time"] = getStartAndEndTimes();
+      newEvent["time"] = addEvent.getStartAndEndTimes();
     } else if (name === "Lecture") {
       //get start time
       var myStartHour = Number(addEvent.getOptionVal($("#startHour"), "startHour"));
@@ -672,35 +677,42 @@ var addEvent = {
         if (item.checked) days.push(item.value);
       });
       var thisDate = new Date();
-      newEvent["recurringTimes"] = [new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myStartHour, myStartMin),
+      newEvent["lectureTimes"] = [new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myStartHour, myStartMin),
                                      new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myEndHour, myEndMin),
                                      days];
+      if ($("#recitationYes")[0].checked === true) {
+        var myStartHour = Number(addEvent.getOptionVal($("#startHourRec"), "startHourRec"));
+        var myStartMin = Number(addEvent.getOptionVal($("#startMinuteRec"), "startMinuteRec"));
+        var myStartampm = addEvent.getOptionVal($("#startAMPMRec"), "startAMPMRec");
+        if (myStartampm === "PM") {
+          myStartHour += 12;
+          if (myStartHour === 24) myStartHour -= 12;
+        } if (myStartampm === "AM" && myStartHour === 12) myStartHour = 0;
+        //get end time
+        var myEndHour = Number(addEvent.getOptionVal($("#endHourRec"), "endHourRec"));
+        var myEndMin = Number(addEvent.getOptionVal($("#endMinuteRec"), "endMinuteRec"));
+        var myEndampm = addEvent.getOptionVal($("#endAMPMRec"), "endAMPMRec");
+        if (myEndampm === "PM") {
+          myEndHour += 12;
+          if (myEndHour === 24) myEndHour -= 12;
+        } if (myEndampm === "AM" && myEndHour === 12) myEndHour = 0;
+        var days = [];
+        var dayInputs = $(".daysOfTheWeekRec");
+        dayInputs.each(function(i, item) {
+          if (item.checked) days.push(item.value);
+        });
+        var thisDate = new Date();
+        newEvent["recitationTimes"] = [new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myStartHour, myStartMin),
+                                       new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myEndHour, myEndMin),
+                                       days];
+        }
+
     }
 
 
     addEvent.addEventToServer(userString, myClassNameString, name, newEvent);
     database[userString].classes[classIndex].events[name].push(newEvent);
-    var user = $("#user-input");
-    var className = $("#className-input");
-    var eventName = $("#eventName-input");
-    var type = $("#eventType-input");
-    var priority = $("#priority-input");
-    var due = new Date();
-    var times = $(".times");
-    var workTime = [];
-    for (i = 0; i < times.length; i++) {
-      workTime.push({'start': times[i].start,
-                    'end': times[i].end})
-    }
-    var newEvent = {"name": eventName.val(),
-                    "type": type.val(),
-                    "due": due,
-                    "priority": priority,
-                    "workTime": workTime };
-    //addEvent.addEventToServer(userString, myClassNameString, newEvent);
 
-    //var classIndex = database[userString].classes.indexOf(myClassNameString);
-    //database[userString].classes[classIndex].events.push(newEvent);
   },
 
   getStartAndEndTimes: function() {
