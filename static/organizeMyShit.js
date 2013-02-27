@@ -159,6 +159,7 @@ var cal = {
       },
 
   mousePressed: function(event) {
+    cal.redrawAll();
     var offset = cal.jqueryCanvas.offset();
     var x = event.pageX - offset.left;
     var y = event.pageY - offset.top;
@@ -167,6 +168,10 @@ var cal = {
       if (cal.drawnBoxes[i].inBox(x, y));
     }
 
+  },
+
+  redrawAll: function() {
+    
   },
 
   drawDates: function() {
