@@ -953,7 +953,7 @@ var listings = {
 
 
 // from: https://developer.mozilla.org/en-US/docs/Canvas_tutorial/Drawing_shapes
-function roundedRect(ctx,x,y,width,height,radius){
+function roundedRect(ctx,x,y,width,height,radius, color, alpha){
     ctx.beginPath();
     ctx.moveTo(x,y+radius);
     ctx.lineTo(x,y+height-radius);
@@ -964,8 +964,12 @@ function roundedRect(ctx,x,y,width,height,radius){
     ctx.quadraticCurveTo(x+width,y,x+width-radius,y);
     ctx.lineTo(x+radius,y);
     ctx.quadraticCurveTo(x,y,x,y+radius);
+    ctx.fillStyle = color;
     ctx.fill();
-}
+    ctx.strokeStyle = "rgba(255, 0, 0," +alpha + ")";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
 
 
 function getAll() {
