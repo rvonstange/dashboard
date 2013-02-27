@@ -263,8 +263,8 @@ var cal = {
     for (var i = 0; i < database[userString].classes.length; i++) {
       for (var j = 0; j < database[userString].classes[i].events["Activity"].length; j++) {
         if (database[userString].classes[i].events["Activity"][j]["recurringTimes"] === undefined) {   
-          cal.tempBox = new cal.Box((new Date(String(database[userString].classes[i].events["Activity"][j]["times"][0][0]))),
-                                (new Date(String(database[userString].classes[i].events["Activity"][j]["times"][0][1]))));               
+          cal.tempBox = new cal.Box((new Date(String(database[userString].classes[i].events["Activity"][j]["times"][0]))),
+                                (new Date(String(database[userString].classes[i].events["Activity"][j]["times"][1]))));               
           console.log((String(database[userString].classes[i].events["Activity"][j]["times"][0][0])));
           console.log((typeof String(database[userString].classes[i].events["Activity"][j]["times"][0])));          
           cal.tempBox.draw();
@@ -315,11 +315,11 @@ var addEvent = {
         addEvent.createTimeChoice();
         addEvent.recurringEvent();
         $('#recurNo').change(function() {
-          $("#eventTable").find("tr:gt(5)").remove();
+          $("#eventTable").find("tr:gt(6)").remove();
           if ($('#recurNo').val() === "no") addEvent.createDays();
         });
         $('#recurYes').change(function() {
-          $("#eventTable").find("tr:gt(5)").remove();
+          $("#eventTable").find("tr:gt(6)").remove();
           if ($('#recurYes').val() === "yes") addEvent.createCalendarChoice();
         });
       }
