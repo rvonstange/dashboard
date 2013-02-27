@@ -6,8 +6,7 @@ To-do:
 get calendar canvas working.
 Develop calendar functionality: click on event and information shows up.
 Create My Classes sidebar for calendar.
-popups appear when you add class and event.
-scroll left and right on calendar
+scroll left and right on calendar (and up and down)
 
 
 
