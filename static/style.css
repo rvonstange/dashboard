@@ -14,6 +14,10 @@ body {
 	position: relative;
 }
 
+.alert {
+	color: red;
+}
+
 .title {
 	font-size: 70px;
 	text-align: left;
@@ -189,7 +193,9 @@ table input 	{
 	font-size: 25px;
 }
 
-
+#loginFail {
+	color: red;
+}
 
 
 /*Calendar Page*/
@@ -200,15 +206,18 @@ table input 	{
 
 #sidebar {
 	width: 165px;
-	top: 100px;
-	position: fixed;
+	height: 100%;
+	top: 2px;
+	position: relative;
 	left: 0px;
 	margin: 0;
 	padding: 0;
 	border: 0;
+	background-color: #488AC7;
+
 }
 
-/*#sidebar ul {
+#sidebar ul {
 	height: 100%;
 	width: 165px;
 	top: 118px;
@@ -216,7 +225,19 @@ table input 	{
 	list-style-type: none;
 	background-color: #488AC7;
 	box-shadow: 0px 0px 8px 0px #000000;
-}*/
+}
+
+#sidebarContent {
+	position: absolute;
+	width: 135px;
+	height: 100%;
+	top: 50px;
+	left: 15px;
+	text-align: left;
+	background-color: #488AC7;
+
+	/*top-left: 10px;
+*/}
 
 #calendarCanvas {
 	top: 130px;
