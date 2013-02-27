@@ -23,6 +23,7 @@
 		<div class="content">
 			<h2 class="title" id="addEvent_title">Add Event</h2>
 			<br>
+
 			<form id="addEventForm" action="javascript:addEvent.addEvent()">
 				<table id="eventTable">
 				<tr id ="dropDown_classes">
@@ -36,25 +37,28 @@
 				<tr id ="type">
 					<td><label class= "startingQuestions" for="type">Type: </label></td>
 					<td>				
-						<select id="chooseEventType" name= "type">
+						<select id="chooseEventType" name= "type" required>
 						</select>
 					</td>
 				</tr>
 				<tr id ="eventName">
 					<td><label class= "startingQuestions" for="eventName">Event Name: </label></td>
-					<td><input id="newEventName" type ="text" name = "eventName"></td>
+					<td><input id="newEventName" type ="text" name = "eventName" required></td>
 				</tr>
 				<tr id ="priority">
 					<td><label class= "startingQuestions" for="priority">Priority: </label></td>
 					<td id="priorityButtons">
-						<input class="priorityRadio" type="radio" name="priority" value="high"/>High
-						<input class="priorityRadio" type="radio" name="priority" value="medium"/>Medium
-						<input class="priorityRadio" type="radio" name="priority" value="low"/>Low
+						<input class="priorityRadio" type="radio" name="priority" required value="high"/>High
+						<input class="priorityRadio" type="radio" name="priority" required value="medium"/>Medium
+						<input class="priorityRadio" type="radio" name="priority" required value="low"/>Low
 					</td>
 				</tr>
 				</table>
+				<div id="addEventAlert"></div>
+				<div id="eventAdded"></div>
 				<input type="submit" value="Add Event">
-			</form>
+
+			</form> 
 		</div>
 	</div>
 

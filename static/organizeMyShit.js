@@ -370,7 +370,7 @@ var addEvent = {
     hwDueTime: function() {
     var startHour = $("<select>");
     startHour.attr("id", "Hour");
-    var hourOptions = [ ,1,2,3,4,5,6,7,8,9,10,11,12];
+    var hourOptions = [1,2,3,4,5,6,7,8,9,10,11,12];
     for (var i = 0; i < hourOptions.length; i++) {
         var newHourOption = $("<option>");
         newHourOption.html(hourOptions[i]);
@@ -378,7 +378,7 @@ var addEvent = {
     } 
     var startMinute = $("<select>");
     startMinute.attr("id", "Minute");
-    var minuteOptions = [ ,"00","15","30","45"];
+    var minuteOptions = ["00","15","30","45"];
     for (var j = 0; j < minuteOptions.length; j++) {
         var newMinuteOption = $("<option>");
         newMinuteOption.html(minuteOptions[j]);
@@ -482,8 +482,8 @@ var addEvent = {
     question.html("One Time Event?");
     var buttons = $("<td>");
     buttons.attr("class","buttons");
-    buttons.append('<input class="oneTime" type="radio" id="recurYes" name="recur" value="yes" />Yes');
-    buttons.append('<input class="oneTime" type="radio" id="recurNo" name="recur" value="no" />No');
+    buttons.append('<input class="oneTime" type="radio" id="recurYes" required name="recur" value="yes" />Yes');
+    buttons.append('<input class="oneTime" type="radio" id="recurNo" required name="recur" value="no" />No');
     newRow.append(question);
     newRow.append(buttons);
     eventTable.append(newRow);
@@ -496,8 +496,8 @@ var addEvent = {
     question.html("Recitation?");
     var buttons = $("<td>");
     buttons.attr("class","buttons");
-    buttons.append('<input type="radio" id="recitationYes" name="recitation" value="yes" />Yes');
-    buttons.append('<input type="radio" id="recitationNo" name="recitation" value="no" />No');
+    buttons.append('<input type="radio" id="recitationYes" required name="recitation" value="yes" />Yes');
+    buttons.append('<input type="radio" id="recitationNo" required name="recitation" value="no" />No');
     newRow.append(question);
     newRow.append(buttons);
     eventTable.append(newRow);
@@ -544,7 +544,7 @@ var addEvent = {
     var question = $("<td>");
     question.html(message);
     var calendar = $("<td>");
-    calendar.append('<input id="chooseDate" type="date" name="dayOfEvent" />');
+    calendar.append('<input id="chooseDate" type="date" required name="dayOfEvent" />');
     newRow.append(question);
     newRow.append(calendar);
     eventTable.append(newRow);
@@ -616,6 +616,7 @@ var addEvent = {
         var name = $("select#chooseEventType option:eq(" + i + ")").text();
       }
     }
+    var timeSuccessful = true;
     var newEvent = {};
     newEvent["type"] = name;
     var myClassNameSelector = $("#chooseClass");
@@ -650,7 +651,9 @@ var addEvent = {
         }
       })
       if (myOneTime === "yes") {
-        newEvent["times"] = addEvent.getStartAndEndTimes();
+        var allTimes = addEvent.getStartAndEndTimes();
+        if (allTimes === undefined) timeSuccessful = false;
+        newEvent["times"] = allTimes;
         newEvent["recurringTimes"] = [];
       } else if (myOneTime === "no") {
         //get start time
@@ -680,6 +683,8 @@ var addEvent = {
                                        days];
         newEvent["times"] = [];
         console.log("days = ", days);
+        if (myStartHour > myEndHour) timeSuccessful = false;
+        else if (myStartHour === myEndHour && myStartMin >= myEndMin) timeSuccessful = false;
 
       } else console.log("this should not happen");
     } else if (name === "Homework") {
@@ -697,7 +702,9 @@ var addEvent = {
       newEvent["due"] = new Date(myYear, myMonth, myDay, myHour, myMin);
       
     } else if (name === "Exam" || name === "Quiz") {
-      newEvent["time"] = addEvent.getStartAndEndTimes();
+      var allTimes = addEvent.getStartAndEndTimes();
+      if (allTimes === undefined) timeSuccessful = false;
+      newEvent["time"] = allTimes;
     } else if (name === "Lecture") {
       //get start time
       var myStartHour = Number(addEvent.getOptionVal($("#startHour"), "startHour"));
@@ -715,6 +722,8 @@ var addEvent = {
         myEndHour += 12;
         if (myEndHour === 24) myEndHour -= 12;
       } if (myEndampm === "AM" && myEndHour === 12) myEndHour = 0;
+      if (myStartHour > myEndHour) timeSuccessful = false;
+      else if (myStartHour === myEndHour && myStartMin >= myEndMin) timeSuccessful = false;
       var days = [];
       var dayInputs = $(".daysOfTheWeek");
       dayInputs.each(function(i, item) {
@@ -745,6 +754,8 @@ var addEvent = {
         dayInputs.each(function(i, item) {
           if (item.checked) days.push(item.value);
         });
+        if (myStartHour > myEndHour) timeSuccessful = false;
+        else if (myStartHour === myEndHour && myStartMin >= myEndMin) timeSuccessful = false;
         var thisDate = new Date();
         newEvent["recitationTimes"] = [new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myStartHour, myStartMin),
                                        new Date(thisDate.getFullYear(), thisDate.getMonth(), thisDate.getDate(), myEndHour, myEndMin),
@@ -752,11 +763,18 @@ var addEvent = {
         }
 
     }
-
+    console.log("timeSuccessful = ", timeSuccessful);
+    if (timeSuccessful === false) {
+      var thisContainer = $("#addEventAlert");
+      thisContainer.html("Please pick appropriate times!")
+      console.log(thisContainer.html());
+      return;
+    } else $("#addEventAlert").html("");
 
     addEvent.addEventToServer(userString, myClassNameString, name, newEvent);
     database[userString].classes[classIndex].events[name].push(newEvent);
-
+    $("#eventAdded").html("Event added successfully!");
+    $("#eventAdded").css("color", "rgb(255,127,80)");
   },
 
   getStartAndEndTimes: function() {
@@ -780,6 +798,8 @@ var addEvent = {
       myEndHour += 12;
       if (myEndHour === 24) myEndHour -= 12;
     } if (myEndampm === "AM" && myEndHour === 12) myEndHour = 0;
+    if (myStartHour > myEndHour) return undefined;
+    else if (myStartHour === myEndHour && myStartMin >= myEndMin) return undefined;
     return [new Date(myYear, myMonth, myDay, myStartHour, myStartMin),
             new Date(myYear, myMonth, myDay, myEndHour, myEndMin)]
   },
@@ -825,10 +845,11 @@ var addClass = {
     if (success === false) {
       addClassAlert.html("Invalid Input(s): " + current);
       return;
-    }
+    } else addClassAlert.html("");
     console.log(user, category.value, className.val());
     addClass.addClassToServer(user, category.value, className.val());
-
+    $("#addedClass").html("Added class successfully!");
+    $("#addedClass").css("color", "rgb(255,127,80)");
     var newClass = {"category": category.value,
                     "name": className.val(),
                     "events": {"Activity": [], "Office Hours": [], "Homework": [], "Exam": [], "Quiz": [], "Lecture": []}};
