@@ -140,32 +140,23 @@ var cal = {
     cal.dayWidth = (cal.width - cal.leftMargin) / 7;
     cal.hourHeight = 40;
     cal.fiftHeight = cal.hourHeight / 4;
+    cal.eventColors = {"Activity": "rgba(255, 69, 0, .5)",
+                       "Office Hours": "rgba(192, 192, 192, .5)",
+                       "Homework": "rgba(0, 0, 0, .75)",
+                       "Exam": "rgba(71, 255, 255, .5)",
+                       "Quiz": "rgba(255, 0, 255, .5)",
+                       "Lecture": "rgba(0, 255, 0, .5)"}
+    cal.currentDate = new Date();
+    cal.currentDate = new Date(cal.currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
     cal.drawGrid();
     cal.drawDates();
     cal.drawOneTimeEvents();
-    cal.drawSidebar();
-  },
-
-  drawSidebar: function() {
-    var container = $("#sidebarContent");
-    var sidebarHeader = $("<h5>");
-    container.append(sidebarHeader);
-    for (var i = 0; i < database[userString].classes.length; i++) {
-      var name = database[userString].classes[i]["name"]
-      var newOption = $("<input class='sidebarClasses' type='checkbox' value=" + name + ">");
-      newOption[0].checked = true;
-      var text = $("<span>");
-      text.html(name);
-      //newOption.html();
-      //newOption.val(database[userString].classes[i]["category"]);
-      container.append(newOption);
-      container.append(text);
-      container.append($("<br>"));
-    }
+    cal.drawRecurringEvents("Activity");
+    cal.drawRecurringEvents("Office Hours");
   },
 
   drawDates: function() {
-    var currentDate = new Date();
+    var currentDate = cal.currentDate
     var tomorrow = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
     var twoDays = new Date(currentDate.getTime() + 2 * 24 * 60 * 60 * 1000);
     var threeDays  = new Date(currentDate.getTime() + 3 * 24 * 60 * 60 * 1000);
@@ -258,18 +249,39 @@ var cal = {
     //cal.ctx.fillRect(0,0,100,100);
   },
 
-  Box: function(start, end) {
+  Box: function(start, end, class_org, eventType, priority, dayIndex) {
     this.start = start;
     this.startHour = start.getHours();
     this.startMinutes = start.getMinutes();
     this.startMinInt = this.startMinutes / 15;
     this.end = end;
+    this.class_org = class_org;
+    this.eventType = eventType;
+    this.priority = priority;
     this.endHour = end.getHours();
     this.endMinutes = end.getMinutes();
     this.endMinInt = this.endMinutes / 15;
-    this.dayOfWeek = start.getDay();
+    if (dayIndex === undefined) this.dayOfWeek = start.getDay();
+    else this.dayOfWeek = dayIndex;
     this.currentDay = (new Date()).getDay();
-    this.drawVariable = (this.dayOfWeek - this.currentDay) % 7;
+    this.drawVariable = (this.dayOfWeek - this.currentDay);
+    this.textColor = "black";
+    if (this.drawVariable < 0) this.drawVariable +=7;
+    this.drawVariable = this.drawVariable %7;
+    if (this.priority === "high") this.alpha = 1;
+    if (this.priority === "medium") this.alpha = .35;
+    if (this.priority === "low") this.alpha = 0;
+    if (this.eventType === "Activity") this.colorOfBox = cal.eventColors["Activity"];
+    if (this.eventType === "Office Hours") this.colorOfBox = cal.eventColors["Office Hours"];
+    if (this.eventType === "Homework") {
+      this.colorOfBox = cal.eventColors["Homework"];
+      this.textColor = "white";
+    }
+    if (this.eventType === "Exam") this.colorOfBox = cal.eventColors["Exam"];
+    if (this.eventType === "Quiz") this.colorOfBox = cal.eventColors["Quiz"];
+    if (this.eventType === "Lecture") this.colorOfBox = cal.eventColors["Lecture"];
+
+    //cal.ctx.addEventListener('mousedown', this.click, false);
     this.draw = function() {
       var x = cal.dayWidth*this.drawVariable +cal.leftMargin;
       var y = cal.topMargin + this.startHour*cal.hourHeight + this.startMinInt*cal.fiftHeight;
@@ -277,28 +289,78 @@ var cal = {
       var height = y1 - y;
       var radius = 10;
       var width = cal.dayWidth;
-      //cal.ctx.fillRect(x,y, width,height);
-      roundedRect(cal.ctx, x, y, width, height, radius);
+      roundedRect(cal.ctx, x, y, width, height, radius, this.colorOfBox, this.alpha);
+      if (height > cal.fiftHeight){
+      cal.ctx.font = "15px Arial Black";
+      cal.ctx.fillStyle = this.textColor;
+      cal.ctx.fillText(this.class_org, x+width/2, y+height/2 +5);
+      }
+      
+    }
+    this.click = function() {
+
+
     }
   },
 
   drawOneTimeEvents: function() {
-    var classList = database[userString].classes;
+    var currentDate = cal.currentDate;
+    var calendarLimitDate = new Date(currentDate.getTime() + 6 * 24 * 60 * 60 * 1000);
     for (var i = 0; i < database[userString].classes.length; i++) {
       for (var j = 0; j < database[userString].classes[i].events["Activity"].length; j++) {
         if (database[userString].classes[i].events["Activity"][j]["recurringTimes"] === undefined) {   
-          cal.tempBox = new cal.Box((new Date(String(database[userString].classes[i].events["Activity"][j]["times"][0]))),
-                                (new Date(String(database[userString].classes[i].events["Activity"][j]["times"][1]))));               
-          console.log((String(database[userString].classes[i].events["Activity"][j]["times"][0][0])));
-          console.log((typeof String(database[userString].classes[i].events["Activity"][j]["times"][0])));          
-          cal.tempBox.draw();
+          var class_org = database[userString].classes[i]["name"];
+          var priority = database[userString].classes[i].events["Activity"][j]["priority"];
+          var start = (new Date(String(database[userString].classes[i].events["Activity"][j]["times"][0])));
+          var end = (new Date(String(database[userString].classes[i].events["Activity"][j]["times"][1])));
+          cal.tempBox = new cal.Box(start, end, class_org, "Activity", priority);               
+          if ((start >= currentDate) && (start <= calendarLimitDate)) {
+            cal.tempBox.draw();
+          }
         }
       }
-      // for (var k = 0; k < database[userString].classes[i].events["Office Hours"].length; k++) {
-
-      // }
-
-
+      for (var j = 0; j < database[userString].classes[i].events["Office Hours"].length; j++) {
+        if (database[userString].classes[i].events["Office Hours"][j]["recurringTimes"] === undefined) {   
+          var class_org = database[userString].classes[i]["name"];
+          var priority = database[userString].classes[i].events["Office Hours"][j]["priority"];
+          var start = (new Date(String(database[userString].classes[i].events["Office Hours"][j]["times"][0])));
+          var end = (new Date(String(database[userString].classes[i].events["Office Hours"][j]["times"][1])));
+          cal.tempBox = new cal.Box(start, end, class_org, "Office Hours", priority);               
+          if ((start >= currentDate) && (start <= calendarLimitDate)) {
+            cal.tempBox.draw();
+          }
+        }
+      }
+      for (var j = 0; j < database[userString].classes[i].events["Exam"].length; j++) {
+          var class_org = database[userString].classes[i]["name"];
+          var priority = database[userString].classes[i].events["Exam"][j]["priority"];
+          var start = (new Date(String(database[userString].classes[i].events["Exam"][j]["time"][0])));
+          var end = (new Date(String(database[userString].classes[i].events["Exam"][j]["time"][1])));
+          cal.tempBox = new cal.Box(start, end, class_org, "Exam", priority);               
+          if ((start >= currentDate) && (start <= calendarLimitDate)) {
+            cal.tempBox.draw();
+          }
+      }
+      for (var j = 0; j < database[userString].classes[i].events["Quiz"].length; j++) {
+          var class_org = database[userString].classes[i]["name"];
+          var priority = database[userString].classes[i].events["Quiz"][j]["priority"];
+          var start = (new Date(String(database[userString].classes[i].events["Quiz"][j]["time"][0])));
+          var end = (new Date(String(database[userString].classes[i].events["Quiz"][j]["time"][1])));
+          cal.tempBox = new cal.Box(start, end, class_org, "Quiz", priority);               
+          if ((start >= currentDate) && (start <= calendarLimitDate)) {
+            cal.tempBox.draw();
+          }
+      }
+      for (var j = 0; j < database[userString].classes[i].events["Homework"].length; j++) {
+          var class_org = database[userString].classes[i]["name"];
+          var priority = database[userString].classes[i].events["Homework"][j]["priority"];
+          var start = (new Date(String(database[userString].classes[i].events["Homework"][j]["due"])));
+          var endBlock = new Date(start.getTime() + .5 * 60 * 60 * 1000);          
+          cal.tempBox = new cal.Box(start, endBlock, class_org, "Homework", priority);               
+          if ((start >= currentDate) && (start <= calendarLimitDate)) {
+            cal.tempBox.draw();
+          }
+      }
   }
 }
 }
