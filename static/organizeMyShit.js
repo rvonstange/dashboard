@@ -137,6 +137,7 @@ var cal = {
     cal.fiftHeight = cal.hourHeight / 4;
     cal.drawGrid();
     cal.drawDates();
+    cal.drawOneTimeEvents();
   },
 
   drawDates: function() {
@@ -225,11 +226,11 @@ var cal = {
       cal.ctx.lineWidth = 0.2;
       cal.ctx.stroke();
     }
-    cal.firstBox = new cal.Box(new Date(2013, 2, 26, 8, 30), new Date(2013, 2, 26, 10, 30));
-    cal.secondBox = new cal.Box(new Date(2013, 2, 27, 4, 30), new Date(2013, 2, 27, 10, 30));
+    // cal.firstBox = new cal.Box(new Date(2013, 2, 26, 8, 30), new Date(2013, 2, 26, 10, 30));
+    // cal.secondBox = new cal.Box(new Date(2013, 2, 27, 4, 30), new Date(2013, 2, 27, 10, 30));
 
-    cal.firstBox.draw();
-    cal.secondBox.draw();
+    // cal.firstBox.draw();
+    // cal.secondBox.draw();
     //cal.ctx.fillRect(0,0,100,100);
   },
 
@@ -245,7 +246,6 @@ var cal = {
     this.dayOfWeek = start.getDay();
     this.currentDay = (new Date()).getDay();
     this.drawVariable = (this.dayOfWeek - this.currentDay) % 7;
-
     this.draw = function() {
       var x = cal.dayWidth*this.drawVariable +cal.leftMargin;
       var y = cal.topMargin + this.startHour*cal.hourHeight + this.startMinInt*cal.fiftHeight;
@@ -256,7 +256,27 @@ var cal = {
       //cal.ctx.fillRect(x,y, width,height);
       roundedRect(cal.ctx, x, y, width, height, radius);
     }
+  },
+
+  drawOneTimeEvents: function() {
+    var classList = database[userString].classes;
+    for (var i = 0; i < database[userString].classes.length; i++) {
+      for (var j = 0; j < database[userString].classes[i].events["Activity"].length; j++) {
+        if (database[userString].classes[i].events["Activity"][j]["recurringTimes"] === undefined) {   
+          cal.tempBox = new cal.Box((new Date(String(database[userString].classes[i].events["Activity"][j]["times"][0][0]))),
+                                (new Date(String(database[userString].classes[i].events["Activity"][j]["times"][0][1]))));               
+          console.log((String(database[userString].classes[i].events["Activity"][j]["times"][0][0])));
+          console.log((typeof String(database[userString].classes[i].events["Activity"][j]["times"][0])));          
+          cal.tempBox.draw();
+        }
+      }
+      // for (var k = 0; k < database[userString].classes[i].events["Office Hours"].length; k++) {
+
+      // }
+
+
   }
+}
 }
 
 var addEvent = {
