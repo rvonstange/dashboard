@@ -22,6 +22,10 @@ function manageBar() {
   addEvents.click(function(){
     window.location.href = 'addEvent.html#' + encodeURI(userString);
   });
+  var logout = $("#logoutBar");
+  logout.click(function(){
+    window.location.href = 'index.html';
+  });
 }
 
 var index = {
@@ -41,7 +45,7 @@ var index = {
       //calendar.init(user.val());
     }
     else {
-      if (!(user.val() in database)) index.invalidUser = true;
+      if (!(user.val() in database)) {console.log("invalid user first"); index.invalidUser = true;}
       else index.invalidPass = true;
       index.refreshLogin();
     }
@@ -51,6 +55,7 @@ var index = {
     var container = $("#loginFail");
     container.html("");
     if (index.invalidUser) {
+      console.log("invalid user second");
       container.html("Invalid Username or Password");
     }
     if (index.invalidPass) {
@@ -138,6 +143,25 @@ var cal = {
     cal.drawGrid();
     cal.drawDates();
     cal.drawOneTimeEvents();
+    cal.drawSidebar();
+  },
+
+  drawSidebar: function() {
+    var container = $("#sidebarContent");
+    var sidebarHeader = $("<h5>");
+    container.append(sidebarHeader);
+    for (var i = 0; i < database[userString].classes.length; i++) {
+      var name = database[userString].classes[i]["name"]
+      var newOption = $("<input class='sidebarClasses' type='checkbox' value=" + name + ">");
+      newOption[0].checked = true;
+      var text = $("<span>");
+      text.html(name);
+      //newOption.html();
+      //newOption.val(database[userString].classes[i]["category"]);
+      container.append(newOption);
+      container.append(text);
+      container.append($("<br>"));
+    }
   },
 
   drawDates: function() {
@@ -786,6 +810,22 @@ var addClass = {
     } else if (categoryOptions[1].checked === true) {
       var category = categoryOptions[1];
     }
+    var success;
+    var current = "";
+    var successful = {"Type": category !== undefined, "Name": className.val() !== undefined && 
+    !addClass.nameInDatabase(className.val()) && className.val() !== ""};
+    var addClassAlert = $("#addClassAlert");
+    console.log("truth value", database[user].classes["Bhangra"]);
+    for (key in successful) {
+      if (successful[key] === false) {
+        current += " " + key + ";";
+        success = false;
+      }
+    }
+    if (success === false) {
+      addClassAlert.html("Invalid Input(s): " + current);
+      return;
+    }
     console.log(user, category.value, className.val());
     addClass.addClassToServer(user, category.value, className.val());
 
@@ -793,9 +833,17 @@ var addClass = {
                     "name": className.val(),
                     "events": {"Activity": [], "Office Hours": [], "Homework": [], "Exam": [], "Quiz": [], "Lecture": []}};
     if (database[user].classes === undefined) database[user].classes = [];
+
     database[user].classes.push(newClass);
     className.val("");
     addClass.refreshAddClass();
+  },
+
+  nameInDatabase: function(name) {
+    for (i = 0; i < database[userString].classes.length; i++) {
+      if (database[userString].classes[i].name === name) return true;
+    }
+    return false;
   },
 
   addClassToServer: function (user, category, name) {
