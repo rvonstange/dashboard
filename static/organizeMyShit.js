@@ -128,6 +128,7 @@ var signup = {
 
 var cal = {
   init: function() {
+    cal.drawSidebar();
     console.log("im in cal.init")
     manageBar();
     cal.canvas = $("#calendarCanvas")[0];
@@ -152,7 +153,7 @@ var cal = {
     cal.currentDate = new Date();
     //cal.currentDate = new Date(cal.currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
     cal.redrawAll();
-    cal.drawSidebar();
+    
     cal.canvas.addEventListener("mousedown", cal.mousePressed, false);
   },
 
@@ -161,9 +162,9 @@ var cal = {
     var container = $("#sidebarContent");
     for (var i = 0; i < database[userString].classes.length; i++) {
       var name = database[userString].classes[i].name;
-      var newCheck = $('<input class="sideBarCheck" type="checkbox" value=' + name + ' />')
+      var newCheck = $('<input class="sideBarCheck" type="checkbox" value=' + i + ' />')
       newCheck[0].checked = true;
-      newCheck.attr("id", name);
+      //newCheck.attr("id", encodeURI(name));
       newCheck.change(function() {
         cal.redrawAll();
         console.log("changed!")
@@ -371,8 +372,8 @@ var cal = {
       }
       else return false;
     }
-    this.drawPopup = function() {
-      roundedRect(cal.ctx, cal.width/2 - this.cOffset, this.y - this.cOffset, 
+    this.drawPopup = function(textColor) {
+      roundedRect(cal.ctx, cal.width/2 - this.cOffset, this.y - 0.5*this.cOffset, 
         this.cOffset*2, this.cOffset*2, this.radius, this.colorOfBox, 0.1);
       var line1 = "Class/Organization Name: " + this.class_org;
       var line2 = "Event Type: " + this.eventType;
@@ -380,12 +381,12 @@ var cal = {
       var line4 = "Priority: " + this.priority;
       var margin = 50;
       cal.ctx.font = "15px Arial Black";
-      cal.ctx.fillStyle = "black";
+      cal.ctx.fillStyle = this.textColor;
       cal.ctx.textAlign = "left";
-      cal.ctx.fillText(line1, cal.width/2 - this.cOffset + margin, this.y - this.cOffset + 1*margin);
-      cal.ctx.fillText(line2, cal.width/2 - this.cOffset + margin, this.y - this.cOffset + 2*margin);
-      cal.ctx.fillText(line3, cal.width/2 - this.cOffset + margin, this.y - this.cOffset + 3*margin);
-      cal.ctx.fillText(line4, cal.width/2 - this.cOffset + margin, this.y - this.cOffset + 4*margin);
+      cal.ctx.fillText(line1, cal.width/2 - this.cOffset + margin, this.y - 0.5*this.cOffset + 2*margin);
+      cal.ctx.fillText(line2, cal.width/2 - this.cOffset + margin, this.y - 0.5*this.cOffset + 3*margin);
+      cal.ctx.fillText(line3, cal.width/2 - this.cOffset + margin, this.y - 0.5*this.cOffset + 4*margin);
+      cal.ctx.fillText(line4, cal.width/2 - this.cOffset + margin, this.y - 0.5*this.cOffset + 5*margin);
     }
   },
 
@@ -395,7 +396,14 @@ var cal = {
 
     for (var i = 0; i < database[userString].classes.length; i++) {
       var class_org = database[userString].classes[i]["name"];
-      if ($("#" + class_org).checked === true) {
+      var allChecks = $(".sideBarCheck");
+      var thisCheck;
+      for (var h = 0; h < allChecks.length; h++) {
+        console.log("value",allChecks[h].value);
+        if (allChecks[h].value === String(i)) thisCheck = allChecks[h];
+      }
+
+      if (thisCheck.checked === true) {
         for (var j = 0; j < database[userString].classes[i].events["Activity"].length; j++) {
           if (database[userString].classes[i].events["Activity"][j]["recurringTimes"] === undefined) {   
             
@@ -469,9 +477,17 @@ var cal = {
                                cal.currentDate.getDate());
     var calendarLimitDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
     for (var i = 0; i < database[userString].classes.length; i++) {
+      var class_org = database[userString].classes[i]["name"];
+      var allChecks = $(".sideBarCheck");
+      var thisCheck;
+      for (var h = 0; h < allChecks.length; h++) {
+        console.log("value",allChecks[h].value);
+        if (allChecks[h].value === String(i)) thisCheck = allChecks[h];
+      }
+      if (thisCheck.checked === true) {
       for (var j = 0; j < database[userString].classes[i].events[eventType].length; j++) {
         if (database[userString].classes[i].events[eventType][j]["times"] === undefined) {  
-          var class_org = database[userString].classes[i]["name"];
+          
           var priority = database[userString].classes[i].events[eventType][j]["priority"];
           var name = database[userString].classes[i].events[eventType][j]["name"];
           var start = (new Date(String(database[userString].classes[i].events[eventType][j]["recurringTimes"][0])));
@@ -505,6 +521,7 @@ var cal = {
         }
         }
       }
+    }
   }
   },
 
@@ -514,8 +531,16 @@ var cal = {
                                cal.currentDate.getDate());
     var calendarLimitDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
     for (var i = 0; i < database[userString].classes.length; i++) {
+      var class_org = database[userString].classes[i]["name"];
+      var allChecks = $(".sideBarCheck");
+      var thisCheck;
+      for (var h = 0; h < allChecks.length; h++) {
+        console.log("value",allChecks[h].value);
+        if (allChecks[h].value === String(i)) thisCheck = allChecks[h];
+      }
+      if (thisCheck.checked === true) {
       for (var j = 0; j < database[userString].classes[i].events["Lecture"].length; j++) {
-        var class_org = database[userString].classes[i]["name"];
+        
         var priority = database[userString].classes[i].events["Lecture"][j]["priority"];
         var name = database[userString].classes[i].events["Lecture"][j]["name"];
         var start = (new Date(String(database[userString].classes[i].events["Lecture"][j]["lectureTimes"][0])));
@@ -579,7 +604,8 @@ var cal = {
           }
         }
       }
-      }
+    }
+    }
     }
 }
 
