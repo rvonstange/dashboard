@@ -1,32 +1,40 @@
 /*General CSS*/
+html	{
+	height: 100%;
+}
+
 body {
 	font-family: 'Wendy One', sans-serif;
 	background-color: rgba(173,216,230,.8);
+	height: 100%;
 }
 
 .page {
 	width: 1098px;
+	/*margin-left: auto;
+	margin-right: auto;*/
 	margin: auto;
-	min-height: 90%;
-	bottom: 10px;
-	/*max-height: 90%;*/
+	/*height: 95%;*/
 	display: block;
 	position: relative;
+	border-radius: 10px;
+	background-color: white;
+	box-shadow: 0px 0px 8px 0px #000000;
 }
 
 .alert {
 	color: red;
 }
 
-.title {
+/*.title {
 	font-size: 70px;
 	text-align: left;
-	/*padding-top: 0px;
+	padding-top: 0px;
 	padding-left: 5px;
-	padding-bottom: 20px;*/
+	padding-bottom: 20px;
 	padding: 20px 0px 20px 20px;
 	text-shadow: 2px 2px white;
-}
+}*/
 
 li {
 	margin: 0px;
@@ -38,6 +46,7 @@ h1	{
 }
 
 /*Used for the Top Bar*/
+
 #bar ul {
 	list-style-type: none;
 	margin: 0;
@@ -50,7 +59,6 @@ h1	{
 	/*padding-top: 15px;*/
 	box-shadow: 0px 0px 8px 0px #000000;
 	background-color: #488AC7;
-	z-index: 1;
 }
 
 #bar button {
@@ -73,12 +81,34 @@ h1	{
 	border-bottom: 1px solid #333;
 }
 
+
+
 #bar {
 	display: block;
+	z-index: 1;
+	position: fixed;
 	border-radius: 10px;
+	padding-bottom: 20px;
 }
 
-/*Change later*/
+#logo {
+	font-size: 70px;
+	text-align: left;
+	/*padding-top: 0px;
+	padding-left: 5px;
+	padding-bottom: 20px;*/
+	padding: 20px 0px 20px 20px;
+	text-shadow: 2px 2px white;
+}
+
+.index h2, .signup h2	{
+	/*font-size: 50px;*/
+	text-align: center;
+	margin: 10px;
+	margin-top: 20px;
+}
+
+/* Indicate button for current page */
 .page #current	{
 	background-color: #7ABCF9;
 	border-top: 1px solid white;
@@ -87,39 +117,27 @@ h1	{
 	border-bottom: 1px solid #333;
 }
 
-.page	{
-	/*background-color: #add8e6;*/
-	border-radius: 10px;
-	background-color: white;
-	box-shadow: 0px 0px 8px 0px #000000;
-	/*height: 100%;*/
-	padding-bottom: 0px;
-}
 
 .content .title	{
-	font-size: 20px;
-	margin-bottom: 15px;
-	margin-top: 50px;
+	font-size: 30px;
+	margin-bottom: 10px;
 }
 
 .content 	{
-	padding-top: 120px;
+	padding: 150px 0px 30px 40px;
 	text-align: center;
-	/*padding-left: 20px;*/
 	margin: auto auto;
-	/*display: grid;
-	grid-template: "login signup";
-	grid-column-definition: auto auto;
-	grid-row-definition: auto;*/
+}
+
+
+.calendar .content	{
+	padding-top: 120px;
 }
 
 #Login	{
 	/*display: inline;*/
 	padding-bottom: 20px;
 	border-bottom: 2px solid #000000;
-	/*grid-column-position: 1;
-	grid-row-position: 1;
-	/*grid-area: "login";*/	*/
 }
 
 [type="submit"]	{
@@ -135,10 +153,7 @@ h1	{
 #Signup	{
 	/*display: inline;*/
 	padding-bottom: 100px;
-	/*grid-column-position: 2;
-	grid-row-position: 1;
-	grid-area: "signup";*/
-}
+}	
 
 
 
@@ -149,16 +164,33 @@ h1	{
 
 }
 
+.signup table {
+	width: 400px;
+	margin: 0 auto;
+}
+
+.addclass table {
+	width: 200px;
+	margin: 0 auto;
+	/*text-align: center;*/
+}
+
+.addevent table 	{
+	width: 600px;
+	margin: 0 auto;
+}
+
+
 #signup_form {
 	font-size: 15px;
 	/*margin-left: 20px;*/
 }
 
-table 	{
+/*table 	{
 	width: 100%;
 	
-	/*text-align: center;*/
-}
+	/*text-align: center;
+}*/
 
 table td:first-child	{
 	text-align: right;
@@ -188,14 +220,14 @@ table input 	{
 	width: 40px;
 }
 
-#eventTable {
+/*#eventTable {
 	table-layout: fixed;
 	font-size: 20px;
 }
 
 .startingQuestions {
 	font-size: 25px;
-}
+}*/
 
 #loginFail {
 	color: red;
@@ -208,48 +240,60 @@ table input 	{
 }
 
 
+
 #sidebar {
 	width: 165px;
-	height: 100%;
-	top: 2px;
-	position: relative;
+	top: 130px;
 	left: 0px;
+	min-height: 400px;
+	position: absolute;
+	/*left: 0px;*/
 	margin: 0;
 	padding: 0;
 	border: 0;
-	background-color: #488AC7;
-
 }
 
+
 #sidebar ul {
-	height: 100%;
-	width: 165px;
-	top: 118px;
-	left: 0px;
+	height: 440px;
+	/*width: 165px;
+	top: 118px;*/
+	/*left: 0px;*/
 	list-style-type: none;
-	background-color: #488AC7;
-	box-shadow: 0px 0px 8px 0px #000000;
 }
 
 #sidebarContent {
 	position: absolute;
 	width: 135px;
-	height: 100%;
 	top: 50px;
-	left: 15px;
+	left: 30px;
 	text-align: left;
-	background-color: #488AC7;
 
-	/*top-left: 10px;
-*/}
+}
 
+.calendar #canvas 	{
+	top: 100px;
+	/*width: 900px;*/
+	margin-left: 130px;
+	max-height: 450px;
+	/*display: inline-block;*/
+	right: 10px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	border: 3px solid black;
+}
+/*canvas*/
 #calendarCanvas {
-	top: 130px;
-	left: 165px;
 	border: 3px solid #000000;
-	position: absolute;
-	display: block;
-	margin: auto;
+	/*display: block;*/
+	/*height: 100%;*/
+	margin: 0px 7px auto auto;
+	
+	/*position: relative;*/
+	/*top: 130px;
+	left: 165px;
+	position: absolute;*/
+	z-index: 0;
 
 }
 
